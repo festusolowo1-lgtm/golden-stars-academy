@@ -1,0 +1,43 @@
+{% extends "admin/base.html" %}
+{% block title %}Users{% endblock %}
+{% block page_title %}User Management{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-hd">
+    <div><div class="card-title">All Admin Users</div><div class="card-sub">Only Super Admin can create, activate, or delete users</div></div>
+    <a href="/admin/users/create" class="btn btn-p"><i class="ti ti-user-plus"></i> Create User</a>
+  </div>
+  <div class="tbl-wrap"><table class="tbl">
+    <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% set rc={'superadmin':'#7c3aed','ict':'#16a34a','media':'#0891b2','bursar':'#b45309'} %}
+    {% set ri={'superadmin':'👑','ict':'🖥️','media':'📸','bursar':'💰'} %}
+    {% set bc={'superadmin':'b-sa','ict':'b-ic','media':'b-me','bursar':'b-bu'} %}
+    {% for u in users %}
+    <tr>
+      <td style="display:flex;align-items:center;gap:9px;padding:12px 13px;">
+        <div style="width:32px;height:32px;border-radius:50%;background:{{ rc.get(u.role,'#666') }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#fff;flex-shrink:0;">{{ u.avatar or u.name[0] }}</div>
+        <span style="font-weight:600;">{{ u.name }}</span>
+      </td>
+      <td>{{ u.email }}</td>
+      <td><span class="badge {{ bc.get(u.role,'b-ic') }}">{{ ri.get(u.role,'') }} {{ u.role|title }}</span></td>
+      <td><span class="badge {{ 'b-active' if u.status=='active' else 'b-inactive' }}">{{ u.status }}</span></td>
+      <td style="color:#aaa;font-size:12px;">{{ u.created }}</td>
+      <td>
+        {% if u.role != 'superadmin' %}
+        <div style="display:flex;gap:6px;">
+          <form method="post" action="/admin/users/{{ u.id }}/toggle">
+            <button class="btn btn-o btn-sm" type="submit">{{ 'Deactivate' if u.status=='active' else 'Activate' }}</button>
+          </form>
+          <form method="post" action="/admin/users/{{ u.id }}/delete" onsubmit="return confirm('Delete {{ u.name }}?')">
+            <button class="btn btn-d btn-sm" type="submit"><i class="ti ti-trash"></i></button>
+          </form>
+        </div>
+        {% else %}<span style="font-size:11px;color:#aaa;">Protected</span>{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+</div>
+{% endblock %}

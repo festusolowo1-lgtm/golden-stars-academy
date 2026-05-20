@@ -1,0 +1,27 @@
+{% extends "admin/base.html" %}
+{% block title %}News{% endblock %}
+{% block page_title %}News &amp; Announcements{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-hd">
+    <div><div class="card-title">All News Posts</div><div class="card-sub">Published posts appear live on the website</div></div>
+    <a href="/admin/news/create" class="btn btn-p"><i class="ti ti-plus"></i> New Post</a>
+  </div>
+  {% if items %}
+  <div class="tbl-wrap"><table class="tbl">
+    <thead><tr><th>Title</th><th>Author</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>{% for n in items %}<tr>
+      <td><strong>{{ n.title }}</strong>{% if n.image_url %}<span style="font-size:10px;color:#0891b2;margin-left:6px;">📷</span>{% endif %}</td>
+      <td>{{ n.author }}</td><td>{{ n.date }}</td>
+      <td><span class="badge {{ 'b-active' if n.published else 'b-inactive' }}">{{ 'Published' if n.published else 'Draft' }}</span></td>
+      <td><div style="display:flex;gap:6px;">
+        <a href="/admin/news/{{ n.id }}/edit" class="btn btn-o btn-sm"><i class="ti ti-edit"></i></a>
+        <form method="post" action="/admin/news/{{ n.id }}/delete" onsubmit="return confirm('Delete?')">
+          <button class="btn btn-d btn-sm" type="submit"><i class="ti ti-trash"></i></button>
+        </form>
+      </div></td>
+    </tr>{% endfor %}</tbody>
+  </table></div>
+  {% else %}<p style="color:#aaa;font-size:13px;">No posts yet.</p>{% endif %}
+</div>
+{% endblock %}

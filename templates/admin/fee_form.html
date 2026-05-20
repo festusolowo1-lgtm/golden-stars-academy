@@ -1,0 +1,26 @@
+{% extends "admin/base.html" %}
+{% block title %}Fee Entry{% endblock %}
+{% block page_title %}{{ 'Edit' if item else 'New' }} Fee Entry{% endblock %}
+{% block content %}
+<div class="card" style="max-width:520px;">
+  <div class="card-sub" style="margin-bottom:18px;">Fee entries require Super Admin approval before appearing on the website.</div>
+  <form method="post" action="{{ '/admin/fees/' + item.id|string + '/edit' if item else '/admin/fees/create' }}">
+    <div class="fg-row">
+      <div class="fg"><label>Level</label><select name="level">{% for l in ['Toddler','Nursery','Primary','JSS','SSS'] %}<option {{ 'selected' if item and item.level==l }}>{{ l }}</option>{% endfor %}</select></div>
+      <div class="fg"><label>Term</label><select name="term">{% for t in ['First Term','Second Term','Third Term'] %}<option {{ 'selected' if item and item.term==t }}>{{ t }}</option>{% endfor %}</select></div>
+    </div>
+    <div class="fg-row">
+      <div class="fg"><label>Session</label><input type="text" name="session" value="{{ item.session if item else '2025/2026' }}"/></div>
+      <div class="fg"><label>Amount (₦)</label><input type="number" name="amount" value="{{ item.amount if item else '' }}" required/></div>
+    </div>
+    <div class="fg"><label>Status</label><select name="status">
+      <option value="pending" {{ 'selected' if not item or item.status=='pending' }}>Pending</option>
+      <option value="approved" {{ 'selected' if item and item.status=='approved' }}>Approved</option>
+    </select></div>
+    <div style="display:flex;gap:10px;">
+      <button type="submit" class="btn btn-p"><i class="ti ti-device-floppy"></i> Save</button>
+      <a href="/admin/fees" class="btn btn-o">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

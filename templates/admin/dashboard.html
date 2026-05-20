@@ -1,0 +1,26 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+{% if access_error %}<div class="flash flash-err"><i class="ti ti-lock"></i> Access denied.</div>{% endif %}
+<div class="sg">
+  <div class="sc"><div class="sc-icon">👥</div><div class="sc-val">{{ counts.users }}</div><div class="sc-lbl">Admin Users</div></div>
+  <div class="sc"><div class="sc-icon">📰</div><div class="sc-val">{{ counts.news }}</div><div class="sc-lbl">News Posts</div></div>
+  <div class="sc"><div class="sc-icon">💰</div><div class="sc-val">{{ counts.fees }}</div><div class="sc-lbl">Fee Entries</div></div>
+  <div class="sc"><div class="sc-icon">📸</div><div class="sc-val">{{ counts.gallery }}</div><div class="sc-lbl">Gallery Photos</div></div>
+  <div class="sc"><div class="sc-icon">📅</div><div class="sc-val">{{ counts.calendar }}</div><div class="sc-lbl">Calendar Events</div></div>
+</div>
+{% if pending_fees %}
+<div class="card">
+  <div class="card-hd"><div><div class="card-title">⏳ Pending Fee Approvals</div><div class="card-sub">Require Super Admin approval before publishing</div></div>{% if current_user.role=='superadmin' %}<a href="/admin/fees" class="btn btn-p btn-sm"><i class="ti ti-check"></i> Review</a>{% endif %}</div>
+  <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Level</th><th>Term</th><th>Amount (₦)</th><th>By</th></tr></thead>
+  <tbody>{% for f in pending_fees %}<tr><td><strong>{{ f.level }}</strong></td><td>{{ f.term }}</td><td><strong>₦{{ '{:,.0f}'.format(f.amount) }}</strong></td><td>{{ f.updated_by }}</td></tr>{% endfor %}</tbody></table></div>
+</div>{% endif %}
+<div class="card">
+  <div class="card-hd"><div><div class="card-title">📰 Recent News</div></div><a href="/admin/news/create" class="btn btn-p btn-sm"><i class="ti ti-plus"></i> New Post</a></div>
+  {% if recent_news %}
+  <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Title</th><th>Author</th><th>Date</th><th>Status</th></tr></thead>
+  <tbody>{% for n in recent_news %}<tr><td><strong>{{ n.title }}</strong></td><td>{{ n.author }}</td><td>{{ n.date }}</td><td><span class="badge {{ 'b-active' if n.published else 'b-inactive' }}">{{ 'Published' if n.published else 'Draft' }}</span></td></tr>{% endfor %}</tbody></table></div>
+  {% else %}<p style="color:#aaa;font-size:13px;">No posts yet. <a href="/admin/news/create" style="color:#1a3a6b;font-weight:600;">Create the first one →</a></p>{% endif %}
+</div>
+{% endblock %}

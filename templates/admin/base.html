@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>{% block title %}Admin{% endblock %} · Golden Stars Academy</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f5f6f8;color:#1c1c2e;display:flex;min-height:100vh;font-size:14px;}
+.sb{width:220px;background:#1a3a6b;color:#fff;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;flex-shrink:0;}
+.sb-top{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:10px;}
+.sb-logo{width:38px;height:38px;border-radius:50%;object-fit:contain;flex-shrink:0;}
+.sb-brand{font-size:12px;font-weight:700;line-height:1.3;}
+.sb-brand small{display:block;font-size:10px;opacity:.45;font-weight:400;}
+.sb-nav{flex:1;padding:8px 0;}
+.sb-sec{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.3);padding:10px 16px 3px;}
+.sb-a{display:flex;align-items:center;gap:9px;padding:9px 16px;color:rgba(255,255,255,.72);font-size:12px;text-decoration:none;border-left:3px solid transparent;transition:all .15s;}
+.sb-a:hover{background:rgba(255,255,255,.08);color:#fff;}
+.sb-a.on{background:rgba(255,255,255,.14);border-left-color:#ffd700;color:#fff;font-weight:600;}
+.sb-a i{font-size:16px;}
+.sb-foot{padding:12px 14px;border-top:1px solid rgba(255,255,255,.1);}
+.sb-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#fff;flex-shrink:0;}
+.sb-user{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.sb-uname{font-size:12px;font-weight:700;line-height:1.2;}
+.sb-urole{font-size:10px;opacity:.45;}
+.sb-out{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);color:#fff;padding:6px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;}
+.sb-out:hover{background:rgba(255,255,255,.14);}
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:#fff;padding:11px 22px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.topbar-title{font-size:14px;font-weight:700;color:#1a3a6b;}
+.topbar-sub{font-size:11px;color:#aaa;margin-top:1px;}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;}
+.b-sa{background:#ede9fe;color:#7c3aed;}
+.b-ic{background:#dcfce7;color:#16a34a;}
+.b-me{background:#e0f2fe;color:#0891b2;}
+.b-bu{background:#fef3c7;color:#b45309;}
+.b-active{background:#dcfce7;color:#16a34a;}
+.b-inactive{background:#fee2e2;color:#dc2626;}
+.b-approved{background:#dcfce7;color:#16a34a;}
+.b-pending{background:#fef3c7;color:#b45309;}
+.content{flex:1;padding:22px;}
+.flash{padding:11px 15px;border-radius:8px;font-size:13px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.flash-ok{background:#dcfce7;color:#166534;border:1px solid #bbf7d0;}
+.flash-err{background:#fee2e2;color:#991b1b;border:1px solid #fecaca;}
+.card{background:#fff;border-radius:12px;padding:22px;box-shadow:0 1px 5px rgba(0,0,0,.05);margin-bottom:18px;}
+.card-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+.card-title{font-size:16px;font-weight:700;}
+.card-sub{font-size:12px;color:#888;margin-top:2px;}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.tbl th{padding:10px 13px;text-align:left;font-weight:600;font-size:11px;color:#666;border-bottom:1px solid #eee;background:#f8f9fc;text-transform:uppercase;letter-spacing:.03em;}
+.tbl td{padding:11px 13px;border-bottom:1px solid #f2f2f5;vertical-align:middle;}
+.tbl tr:hover td{background:#fafbff;}
+.tbl-wrap{overflow-x:auto;}
+.fg{margin-bottom:14px;}
+.fg label{display:block;font-size:12px;font-weight:600;color:#555;margin-bottom:4px;}
+.fg input,.fg select,.fg textarea{width:100%;padding:9px 12px;border:1px solid #ddd;border-radius:7px;font-size:13px;outline:none;font-family:inherit;background:#fff;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#1a3a6b;}
+.fg textarea{resize:vertical;min-height:80px;}
+.fg input[type=file]{padding:6px;}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:7px;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;text-decoration:none;transition:opacity .15s;}
+.btn:hover{opacity:.88;}
+.btn-p{background:#1a3a6b;color:#fff;}
+.btn-d{background:#dc2626;color:#fff;}
+.btn-ok{background:#16a34a;color:#fff;}
+.btn-o{background:transparent;border:1.5px solid #1a3a6b;color:#1a3a6b;}
+.btn-sm{padding:5px 11px;font-size:12px;}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:13px;margin-bottom:22px;}
+.sc{background:#fff;border-radius:11px;padding:16px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.sc-icon{font-size:24px;margin-bottom:5px;}
+.sc-val{font-size:24px;font-weight:700;}
+.sc-lbl{font-size:11px;color:#888;margin-top:2px;}
+.prev{width:90px;height:90px;border-radius:8px;object-fit:contain;border:1px solid #eee;background:#f8f9fc;display:block;margin-top:7px;}
+.info-box{background:#e8eef8;border:1px solid #c7d7f0;border-radius:8px;padding:12px 16px;font-size:13px;color:#1a3a6b;margin-bottom:14px;}
+</style>
+</head>
+<body>
+<div class="sb">
+  <div class="sb-top">
+    {% if school_logo and school_logo.url %}
+      <img class="sb-logo" src="{{ school_logo.url }}" alt="{{ school_logo.alt_text }}"/>
+    {% else %}
+      <svg class="sb-logo" viewBox="0 0 300 340" xmlns="http://www.w3.org/2000/svg" style="background:rgba(255,255,255,.08);border-radius:50%">
+        <path d="M150 8 L272 54 L272 182 Q272 284 150 332 Q28 284 28 182 L28 54 Z" fill="#E8B830"/>
+        <path d="M150 22 L258 62 L258 182 Q258 272 150 316 Q42 272 42 182 L42 62 Z" fill="#CC2200"/>
+        <path d="M65 110 L235 110 L235 215 Q235 255 150 285 Q65 255 65 215 Z" fill="#1a3575"/>
+        <polygon points="150,95 155,110 171,110 158,120 163,135 150,126 137,135 142,120 129,110 145,110" fill="#F5C518"/>
+      </svg>
+    {% endif %}
+    <div class="sb-brand">Golden Stars<small>Admin Portal</small></div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-sec">Main</div>
+    <a href="/admin" class="sb-a {% if request.url.path=='/admin' %}on{% endif %}"><i class="ti ti-dashboard"></i> Dashboard</a>
+    <a href="/" class="sb-a" target="_blank"><i class="ti ti-world"></i> View Website</a>
+    {% if current_user.role=='superadmin' %}
+    <div class="sb-sec">Administration</div>
+    <a href="/admin/users"    class="sb-a {% if '/admin/users' in request.url.path %}on{% endif %}"><i class="ti ti-users"></i> User Management</a>
+    <a href="/admin/logos"    class="sb-a {% if '/admin/logos' in request.url.path %}on{% endif %}"><i class="ti ti-photo-star"></i> Logo Manager</a>
+    <a href="/admin/siteinfo" class="sb-a {% if '/admin/siteinfo' in request.url.path %}on{% endif %}"><i class="ti ti-settings"></i> Site Information</a>
+    {% endif %}
+    {% if current_user.role in ['superadmin','ict'] %}
+    <div class="sb-sec">Content</div>
+    <a href="/admin/news"     class="sb-a {% if '/admin/news' in request.url.path %}on{% endif %}"><i class="ti ti-news"></i> News</a>
+    <a href="/admin/calendar" class="sb-a {% if '/admin/calendar' in request.url.path %}on{% endif %}"><i class="ti ti-calendar-event"></i> Calendar</a>
+    {% if current_user.role=='ict' %}
+    <a href="/admin/siteinfo" class="sb-a {% if '/admin/siteinfo' in request.url.path %}on{% endif %}"><i class="ti ti-settings"></i> Site Information</a>
+    <a href="/admin/logos"    class="sb-a {% if '/admin/logos' in request.url.path %}on{% endif %}"><i class="ti ti-photo-star"></i> Logo Manager</a>
+    {% endif %}
+    {% endif %}
+    {% if current_user.role in ['superadmin','media','ict'] %}
+    <div class="sb-sec">Media</div>
+    <a href="/admin/gallery" class="sb-a {% if '/admin/gallery' in request.url.path %}on{% endif %}"><i class="ti ti-camera"></i> Gallery &amp; Team</a>
+    {% endif %}
+    {% if current_user.role in ['superadmin','bursar'] %}
+    <div class="sb-sec">Finance</div>
+    <a href="/admin/fees" class="sb-a {% if '/admin/fees' in request.url.path %}on{% endif %}"><i class="ti ti-cash"></i> Fee Management</a>
+    {% endif %}
+    {% if current_user.role in ['superadmin','ict'] %}
+    <div class="sb-sec">Academic</div>
+    <a href="/admin/results" class="sb-a {% if '/admin/results' in request.url.path %}on{% endif %}"><i class="ti ti-chart-bar"></i> Results Approval</a>
+    {% endif %}
+    {% if current_user.role == 'superadmin' %}
+    <div class="sb-sec">Portals</div>
+    <a href="/admin/staff"   class="sb-a {% if '/admin/staff'   in request.url.path %}on{% endif %}"><i class="ti ti-users"></i> Staff Accounts</a>
+    <a href="/admin/parents" class="sb-a {% if '/admin/parents' in request.url.path %}on{% endif %}"><i class="ti ti-heart"></i> Parent Accounts</a>
+    {% endif %}
+  </nav>
+  <div class="sb-foot">
+    <div class="sb-user">
+      {% set rc={'superadmin':'#7c3aed','ict':'#16a34a','media':'#0891b2','bursar':'#b45309'} %}
+      <div class="sb-av" style="background:{{ rc.get(current_user.role,'#1a3a6b') }}">{{ current_user.avatar or current_user.name[0] }}</div>
+      <div><div class="sb-uname">{{ current_user.name }}</div><div class="sb-urole">{{ current_user.role }}</div></div>
+    </div>
+    <a href="/admin/logout"><button class="sb-out">Sign Out</button></a>
+  </div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div><div class="topbar-title">{% block page_title %}Dashboard{% endblock %}</div><div class="topbar-sub">Golden Stars Academy — Admin Panel</div></div>
+    {% set ri={'superadmin':'👑','ict':'🖥️','media':'📸','bursar':'💰'} %}
+    {% set bc={'superadmin':'b-sa','ict':'b-ic','media':'b-me','bursar':'b-bu'} %}
+    <span class="badge {{ bc.get(current_user.role,'b-ic') }}">{{ ri.get(current_user.role,'') }} {{ current_user.role|title }}</span>
+  </div>
+  <div class="content">
+    {% for f in flash_msgs %}
+    <div class="flash {{ 'flash-ok' if f.cat=='success' else 'flash-err' }}">
+      <i class="ti ti-{{ 'circle-check' if f.cat=='success' else 'alert-circle' }}"></i> {{ f.msg }}
+    </div>
+    {% endfor %}
+    {% block content %}{% endblock %}
+  </div>
+</div>
+</body>
+</html>

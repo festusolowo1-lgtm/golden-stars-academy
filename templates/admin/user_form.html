@@ -1,0 +1,30 @@
+{% extends "admin/base.html" %}
+{% block title %}Create User{% endblock %}
+{% block page_title %}Create New User{% endblock %}
+{% block content %}
+<div class="card" style="max-width:520px;">
+  <div class="card-sub" style="margin-bottom:20px;">New users receive access based on their assigned role.</div>
+  <form method="post" action="/admin/users/create">
+    <div class="fg"><label>Full Name</label><input type="text" name="name" placeholder="e.g. Ngozi Okafor" required/></div>
+    <div class="fg"><label>Email Address</label><input type="email" name="email" placeholder="staff@goldenstarsacademy.com" required/></div>
+    <div class="fg"><label>Password</label><input type="password" name="password" placeholder="Minimum 8 characters" required/></div>
+    <div class="fg">
+      <label>Role</label>
+      <select name="role" onchange="showHint(this.value)">
+        <option value="media">📸 Media Officer</option>
+        <option value="bursar">💰 Bursar</option>
+        <option value="ict">🖥️ ICT Officer</option>
+      </select>
+    </div>
+    <div class="info-box" id="hint">📸 Can upload event photos and manage the gallery and team pages.</div>
+    <div style="display:flex;gap:10px;">
+      <button type="submit" class="btn btn-p"><i class="ti ti-user-check"></i> Create User</button>
+      <a href="/admin/users" class="btn btn-o">Cancel</a>
+    </div>
+  </form>
+</div>
+<script>
+const h={media:'📸 Can upload event photos and manage the gallery and team pages.',bursar:'💰 Can create and update student fee schedules. Fees require Super Admin approval.',ict:'🖥️ Can update site info, news, calendar, gallery, logos, and page images.'};
+function showHint(r){document.getElementById('hint').textContent=h[r]||'';}
+</script>
+{% endblock %}

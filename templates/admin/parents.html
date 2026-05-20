@@ -1,0 +1,205 @@
+{% extends "admin/base.html" %}
+{% block title %}Parent Accounts{% endblock %}
+{% block page_title %}Parent Accounts{% endblock %}
+{% block content %}
+<div class="card-hd">
+  <div>
+    <div class="card-title">Parent Accounts</div>
+    <div class="card-sub">Create parent logins linked to student records</div>
+  </div>
+  <button class="btn btn-p" onclick="showForm('createForm')">
+    <i class="ti ti-plus"></i> Add Parent
+  </button>
+</div>
+
+<!-- CREATE FORM -->
+<div class="card" id="createForm" style="display:none;border-left:4px solid #1a3a6b">
+  <div class="card-hd"><div class="card-title"><i class="ti ti-user-plus"></i> Create Parent Account</div></div>
+  <form method="post" action="/admin/parents/create">
+    <div class="fg-row">
+      <div class="fg"><label>Parent Name *</label><input type="text" name="name" required placeholder="Full name"></div>
+      <div class="fg"><label>Email *</label><input type="email" name="email" required placeholder="parent@email.com"></div>
+    </div>
+    <div class="fg-row">
+      <div class="fg"><label>Password *</label><input type="password" name="password" required placeholder="Set a password"></div>
+      <div class="fg"><label>Phone Number</label><input type="text" name="phone" placeholder="+234..."></div>
+    </div>
+    <div class="fg">
+      <label>Link Students to This Parent</label>
+      <input type="text" id="searchCreate" placeholder="Search by name, class or admission no..." oninput="filterStudents('gridCreate','searchCreate')"
+        style="margin-bottom:8px;padding:8px 12px;border:1px solid #ddd;border-radius:7px;width:100%;font-size:13px">
+      <div id="gridCreate" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;background:#f8f9fc;border:1px solid #ddd;border-radius:7px;padding:12px;max-height:220px;overflow-y:auto">
+        {% for s in students %}
+        <label class="student-item" data-name="{{ s.full_name|lower }}" data-class="{{ s.class_name|lower }}" data-adm="{{ s.admission_no|lower }}"
+          style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:7px 9px;border-radius:6px;border:1px solid #eee;background:#fff;font-size:13px">
+          <input type="checkbox" name="student_check" value="{{ s.id }}" onchange="updateIds('gridCreate','studentIdsField','selectedDisplay')" style="width:15px;height:15px;cursor:pointer;flex-shrink:0">
+          <span>
+            <strong>{{ s.full_name }}</strong>
+            <small style="display:block;color:#888">{{ s.class_name }} &bull; {{ s.admission_no }}</small>
+          </span>
+        </label>
+        {% else %}
+        <p style="color:#aaa;font-size:13px;padding:8px">No students yet. Add via Staff portal first.</p>
+        {% endfor %}
+      </div>
+      <input type="hidden" name="student_ids" id="studentIdsField">
+      <div style="font-size:12px;color:#888;margin-top:5px">Selected: <span id="selectedDisplay" style="color:#1a3a6b;font-weight:600">none</span></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:10px">
+      <button type="submit" class="btn btn-p"><i class="ti ti-check"></i> Create Account</button>
+      <button type="button" class="btn btn-o" onclick="hideAll()">Cancel</button>
+    </div>
+  </form>
+</div>
+
+<!-- EDIT FORMS (one per parent, hidden) -->
+{% for p in parents %}
+<div class="card" id="editForm{{ p.id }}" style="display:none;border-left:4px solid #f59e0b">
+  <div class="card-hd"><div class="card-title"><i class="ti ti-edit"></i> Edit Parent: {{ p.name }}</div></div>
+  <form method="post" action="/admin/parents/{{ p.id }}/edit">
+    <div class="fg-row">
+      <div class="fg"><label>Parent Name *</label><input type="text" name="name" required value="{{ p.name }}"></div>
+      <div class="fg"><label>Email *</label><input type="email" name="email" required value="{{ p.email }}"></div>
+    </div>
+    <div class="fg-row">
+      <div class="fg"><label>New Password <small style="color:#888">(leave blank to keep current)</small></label><input type="password" name="password" placeholder="Leave blank to keep"></div>
+      <div class="fg"><label>Phone</label><input type="text" name="phone" value="{{ p.phone or '' }}"></div>
+    </div>
+    <div class="fg">
+      <label>Linked Students</label>
+      <input type="text" id="searchEdit{{ p.id }}" placeholder="Search students..." oninput="filterStudents('gridEdit{{ p.id }}','searchEdit{{ p.id }}')"
+        style="margin-bottom:8px;padding:8px 12px;border:1px solid #ddd;border-radius:7px;width:100%;font-size:13px">
+      <div id="gridEdit{{ p.id }}" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;background:#f8f9fc;border:1px solid #ddd;border-radius:7px;padding:12px;max-height:220px;overflow-y:auto">
+        {% set current_ids = p.student_ids.split(",") if p.student_ids else [] %}
+        {% for s in students %}
+        <label class="student-item" data-name="{{ s.full_name|lower }}" data-class="{{ s.class_name|lower }}" data-adm="{{ s.admission_no|lower }}"
+          style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:7px 9px;border-radius:6px;border:1px solid #eee;background:#fff;font-size:13px">
+          <input type="checkbox" name="student_check" value="{{ s.id }}"
+            {{ "checked" if s.id|string in current_ids else "" }}
+            onchange="updateIds('gridEdit{{ p.id }}','editIds{{ p.id }}','editDisplay{{ p.id }}')"
+            style="width:15px;height:15px;cursor:pointer;flex-shrink:0">
+          <span>
+            <strong>{{ s.full_name }}</strong>
+            <small style="display:block;color:#888">{{ s.class_name }} &bull; {{ s.admission_no }}</small>
+          </span>
+        </label>
+        {% endfor %}
+      </div>
+      <input type="hidden" name="student_ids" id="editIds{{ p.id }}" value="{{ p.student_ids }}">
+      <div style="font-size:12px;color:#888;margin-top:5px">Selected: <span id="editDisplay{{ p.id }}" style="color:#1a3a6b;font-weight:600">{{ p.student_ids or "none" }}</span></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:10px">
+      <button type="submit" class="btn btn-p"><i class="ti ti-check"></i> Save Changes</button>
+      <button type="button" class="btn btn-o" onclick="hideAll()">Cancel</button>
+    </div>
+  </form>
+</div>
+{% endfor %}
+
+<!-- PARENTS TABLE -->
+<div class="card">
+  <div class="card-hd">
+    <div>
+      <div class="card-title">All Parent Accounts</div>
+      <div class="card-sub">{{ parents|length }} parent(s) registered</div>
+    </div>
+    <input type="text" placeholder="Search parents..." oninput="filterTable(this,'parentsTbl')"
+      style="padding:7px 12px;border:1px solid #ddd;border-radius:7px;font-size:13px;width:220px">
+  </div>
+  <div class="tbl-wrap">
+    <table class="tbl" id="parentsTbl">
+      <thead>
+        <tr>
+          <th>#</th><th>Parent</th><th>Email</th><th>Phone</th>
+          <th>Linked Students</th><th>Status</th><th>Created</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in parents %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:34px;height:34px;border-radius:50%;background:#1a3a6b;color:#ffd700;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0">
+                {{ p.name[:1].upper() }}
+              </div>
+              <div>
+                <div style="font-weight:600">{{ p.name }}</div>
+                <div style="font-size:11px;color:#888">{{ p.phone or "No phone" }}</div>
+              </div>
+            </div>
+          </td>
+          <td style="color:#555">{{ p.email }}</td>
+          <td>{{ p.phone or "—" }}</td>
+          <td>
+            {% if p.student_ids %}
+              {% for sid in p.student_ids.split(",") %}
+                {% if sid.strip().isdigit() %}
+                  {% set found = students | selectattr("id","equalto",sid.strip()|int) | first | default(none) %}
+                  {% if found %}
+                  <span class="badge b-ic" style="margin:1px;display:inline-block">{{ found.full_name }}<small style="opacity:.7"> ({{ found.class_name }})</small></span>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              <span style="color:#aaa;font-size:12px">None linked</span>
+            {% endif %}
+          </td>
+          <td><span class="badge {{ "b-active" if p.status=="active" else "b-inactive" }}">{{ p.status|title }}</span></td>
+          <td style="color:#888;font-size:12px">{{ p.created }}</td>
+          <td>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-o btn-sm" onclick="showForm('editForm{{ p.id }}')">
+                <i class="ti ti-edit"></i> Edit
+              </button>
+              <form method="post" action="/admin/parents/{{ p.id }}/delete" onsubmit="return confirm('Delete {{ p.name }}?')">
+                <button type="submit" class="btn btn-d btn-sm"><i class="ti ti-trash"></i></button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="8" style="text-align:center;padding:40px;color:#aaa">
+            <i class="ti ti-user-heart" style="font-size:32px;display:block;margin-bottom:8px"></i>
+            No parent accounts yet.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+function showForm(id) {
+  hideAll();
+  document.getElementById(id).style.display = 'block';
+  document.getElementById(id).scrollIntoView({behavior:'smooth', block:'start'});
+}
+function hideAll() {
+  document.getElementById('createForm').style.display = 'none';
+  {% for p in parents %}
+  document.getElementById('editForm{{ p.id }}').style.display = 'none';
+  {% endfor %}
+}
+function updateIds(gridId, fieldId, displayId) {
+  const checked = [...document.querySelectorAll('#' + gridId + ' input[type=checkbox]:checked')].map(c => c.value);
+  document.getElementById(fieldId).value = checked.join(',');
+  document.getElementById(displayId).textContent = checked.length ? checked.join(', ') : 'none';
+}
+function filterStudents(gridId, searchId) {
+  const q = document.getElementById(searchId).value.toLowerCase();
+  document.querySelectorAll('#' + gridId + ' .student-item').forEach(el => {
+    const match = el.dataset.name.includes(q) || el.dataset.class.includes(q) || el.dataset.adm.includes(q);
+    el.style.display = match ? 'flex' : 'none';
+  });
+}
+function filterTable(input, tableId) {
+  const q = input.value.toLowerCase();
+  document.querySelectorAll('#' + tableId + ' tbody tr').forEach(row => {
+    row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+</script>
+{% endblock %}

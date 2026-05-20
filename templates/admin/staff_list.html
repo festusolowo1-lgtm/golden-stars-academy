@@ -1,0 +1,117 @@
+{% extends "admin/base.html" %}
+{% block title %}Staff Accounts{% endblock %}
+{% block page_title %}Staff Accounts{% endblock %}
+{% block content %}
+<div class="card-hd">
+  <div>
+    <div class="card-title">Staff Accounts</div>
+    <div class="card-sub">Teacher and staff portal access management</div>
+  </div>
+  <button class="btn btn-p" onclick="document.getElementById('createForm').style.display=document.getElementById('createForm').style.display=='none'?'block':'none'">
+    <i class="ti ti-plus"></i> Add Staff
+  </button>
+</div>
+
+<!-- CREATE FORM -->
+<div class="card" id="createForm" style="display:none;border-left:4px solid #1a3a6b">
+  <div class="card-hd"><div class="card-title">Create Staff Account</div></div>
+  <form method="post" action="/admin/staff/create">
+    <div class="fg-row">
+      <div class="fg"><label>Full Name *</label><input type="text" name="name" required placeholder="e.g. Mr. John Adamu"></div>
+      <div class="fg"><label>Email *</label><input type="email" name="email" required placeholder="teacher@school.com"></div>
+    </div>
+    <div class="fg-row">
+      <div class="fg"><label>Password *</label><input type="password" name="password" required placeholder="Set a secure password"></div>
+      <div class="fg"><label>Role *</label>
+        <select name="role">
+          <option value="teacher">Teacher</option>
+          <option value="headteacher">Head Teacher</option>
+          <option value="principal">Principal</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg-row">
+      <div class="fg"><label>Subject</label><input type="text" name="subject" placeholder="e.g. Mathematics"></div>
+      <div class="fg"><label>Form Class</label><input type="text" name="class_name" placeholder="e.g. JSS 1A"></div>
+    </div>
+    <div class="fg">
+      <label>Section</label>
+      <select name="section">
+        <option value="">— Select Section —</option>
+        <option value="Primary">Primary</option>
+        <option value="Secondary">Secondary</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button type="submit" class="btn btn-p"><i class="ti ti-check"></i> Create Account</button>
+      <button type="button" class="btn btn-o" onclick="document.getElementById('createForm').style.display='none'">Cancel</button>
+    </div>
+  </form>
+</div>
+
+<!-- STAFF TABLE -->
+<div class="card">
+  <div class="card-hd">
+    <div>
+      <div class="card-title">All Staff Accounts</div>
+      <div class="card-sub">{{ staff|length }} staff member(s)</div>
+    </div>
+    <a href="/staff/login" target="_blank" class="btn btn-o btn-sm"><i class="ti ti-external-link"></i> Staff Portal</a>
+  </div>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Staff Member</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Subject</th>
+          <th>Class</th>
+          <th>Section</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in staff %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:34px;height:34px;border-radius:50%;background:#1a3a6b;color:#ffd700;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0">
+                {{ s.name[:1].upper() }}
+              </div>
+              <div style="font-weight:600">{{ s.name }}</div>
+            </div>
+          </td>
+          <td style="color:#555">{{ s.email }}</td>
+          <td>
+            {% set rc = {"teacher":"b-ic","headteacher":"b-me","principal":"b-sa"} %}
+            <span class="badge {{ rc.get(s.role,"b-ic") }}">{{ s.role|title }}</span>
+          </td>
+          <td>{{ s.subject or "—" }}</td>
+          <td>{{ s.class_name or "—" }}</td>
+          <td>{{ s.section or "—" }}</td>
+          <td><span class="badge {{ "b-active" if s.status=="active" else "b-inactive" }}">{{ s.status|title }}</span></td>
+          <td style="color:#888;font-size:12px">{{ s.created }}</td>
+          <td>
+            <form method="post" action="/admin/staff/{{ s.id }}/delete" onsubmit="return confirm('Delete {{ s.name }}?')">
+              <button type="submit" class="btn btn-d btn-sm"><i class="ti ti-trash"></i> Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="10" style="text-align:center;padding:40px;color:#aaa">
+            <i class="ti ti-users" style="font-size:32px;display:block;margin-bottom:8px"></i>
+            No staff accounts yet. Click "Add Staff" to create one.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

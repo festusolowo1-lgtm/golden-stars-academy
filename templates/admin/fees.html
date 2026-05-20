@@ -1,0 +1,29 @@
+{% extends "admin/base.html" %}
+{% block title %}Fees{% endblock %}
+{% block page_title %}Fee Management{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-hd">
+    <div><div class="card-title">Fee Schedule</div><div class="card-sub">Only approved fees are published to the website</div></div>
+    <a href="/admin/fees/create" class="btn btn-p"><i class="ti ti-plus"></i> New Entry</a>
+  </div>
+  <div class="tbl-wrap"><table class="tbl">
+    <thead><tr><th>Level</th><th>Term</th><th>Session</th><th>Amount (₦)</th><th>Status</th><th>Updated By</th><th>Actions</th></tr></thead>
+    <tbody>{% for f in items %}<tr>
+      <td><strong>{{ f.level }}</strong></td><td>{{ f.term }}</td><td>{{ f.session }}</td>
+      <td><strong style="color:#1a3a6b;">₦{{ '{:,.0f}'.format(f.amount) }}</strong></td>
+      <td><span class="badge {{ 'b-approved' if f.status=='approved' else 'b-pending' }}">{{ f.status }}</span></td>
+      <td style="font-size:12px;color:#888;">{{ f.updated_by }}<br/>{{ f.updated_at }}</td>
+      <td><div style="display:flex;gap:5px;flex-wrap:wrap;">
+        <a href="/admin/fees/{{ f.id }}/edit" class="btn btn-o btn-sm"><i class="ti ti-edit"></i></a>
+        {% if f.status=='pending' and current_user.role=='superadmin' %}
+        <form method="post" action="/admin/fees/{{ f.id }}/approve"><button class="btn btn-ok btn-sm"><i class="ti ti-check"></i> Approve</button></form>
+        {% endif %}
+        {% if current_user.role=='superadmin' %}
+        <form method="post" action="/admin/fees/{{ f.id }}/delete" onsubmit="return confirm('Delete?')"><button class="btn btn-d btn-sm"><i class="ti ti-trash"></i></button></form>
+        {% endif %}
+      </div></td>
+    </tr>{% endfor %}</tbody>
+  </table></div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+{% block title %}Logo Manager{% endblock %}
+{% block page_title %}Logo Manager{% endblock %}
+{% block content %}
+<div class="info-box"><i class="ti ti-info-circle"></i> The school logo appears in the header, footer, admin sidebar and login page. The web designer logo appears in the footer.</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;flex-wrap:wrap;">
+  <div class="card">
+    <div class="card-title" style="margin-bottom:4px;">🏫 School Logo</div>
+    <div class="card-sub" style="margin-bottom:16px;">Header, footer, admin sidebar &amp; login page</div>
+    {% if school and school.url %}<img src="{{ school.url }}" class="prev" style="width:80px;height:80px;border-radius:50%;margin-bottom:14px;"/><p style="font-size:12px;color:#888;margin-bottom:14px;">Updated by {{ school.updated_by }} · {{ school.updated_at }}</p>{% else %}<p style="font-size:13px;color:#aaa;margin-bottom:16px;">No logo uploaded. Using built-in SVG.</p>{% endif %}
+    <form method="post" action="/admin/logos" enctype="multipart/form-data">
+      <input type="hidden" name="logo_type" value="school"/>
+      <div class="fg"><label>Upload (PNG or SVG recommended)</label><input type="file" name="logo_file" accept="image/*"/></div>
+      <div class="fg"><label>Or paste URL</label><input type="text" name="logo_url" value="{{ school.url if school else '' }}" placeholder="https://..."/></div>
+      <div class="fg"><label>Alt Text</label><input type="text" name="alt_text" value="{{ school.alt_text if school else 'Golden Stars Academy' }}"/></div>
+      <button type="submit" class="btn btn-p"><i class="ti ti-upload"></i> Update School Logo</button>
+    </form>
+  </div>
+  <div class="card">
+    <div class="card-title" style="margin-bottom:4px;">🎨 Web Designer Logo</div>
+    <div class="card-sub" style="margin-bottom:16px;">Appears in website footer "Powered by" section</div>
+    {% if designer and designer.url %}<img src="{{ designer.url }}" class="prev" style="width:80px;height:80px;border-radius:8px;margin-bottom:14px;"/><p style="font-size:12px;color:#888;margin-bottom:14px;">Updated by {{ designer.updated_by }} · {{ designer.updated_at }}</p>{% else %}<p style="font-size:13px;color:#aaa;margin-bottom:16px;">No logo uploaded. Showing text only.</p>{% endif %}
+    <form method="post" action="/admin/logos" enctype="multipart/form-data">
+      <input type="hidden" name="logo_type" value="webdesigner"/>
+      <div class="fg"><label>Upload Designer Logo</label><input type="file" name="logo_file" accept="image/*"/></div>
+      <div class="fg"><label>Or paste URL</label><input type="text" name="logo_url" value="{{ designer.url if designer else '' }}" placeholder="https://..."/></div>
+      <div class="fg"><label>Company Name / Alt Text</label><input type="text" name="alt_text" value="{{ designer.alt_text if designer else 'Eled Global' }}"/></div>
+      <button type="submit" class="btn btn-p"><i class="ti ti-upload"></i> Update Designer Logo</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

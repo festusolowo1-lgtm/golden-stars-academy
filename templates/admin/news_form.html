@@ -1,0 +1,20 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Edit' if item else 'New' }} Post{% endblock %}
+{% block page_title %}{{ 'Edit' if item else 'Create' }} News Post{% endblock %}
+{% block content %}
+<div class="card" style="max-width:640px;">
+  <form method="post" action="{{ '/admin/news/' + item.id|string + '/edit' if item else '/admin/news/create' }}" enctype="multipart/form-data">
+    <div class="fg"><label>Headline</label><input type="text" name="title" value="{{ item.title if item else '' }}" placeholder="e.g. Admission Portal Now Open" required/></div>
+    <div class="fg"><label>Body / Content</label><textarea name="body" placeholder="Write the announcement..." required>{{ item.body if item else '' }}</textarea></div>
+    <div class="fg"><label>Image (optional)</label><input type="file" name="image" accept="image/*"/>{% if item and item.image_url %}<img src="{{ item.image_url }}" class="prev"/>{% endif %}</div>
+    <div class="fg" style="display:flex;align-items:center;gap:10px;">
+      <input type="checkbox" name="published" id="pub" value="1" style="width:auto;" {{ 'checked' if not item or item.published else '' }}/>
+      <label for="pub" style="cursor:pointer;">Publish immediately (visible on website)</label>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button type="submit" class="btn btn-p"><i class="ti ti-send"></i> {{ 'Update' if item else 'Publish' }}</button>
+      <a href="/admin/news" class="btn btn-o">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

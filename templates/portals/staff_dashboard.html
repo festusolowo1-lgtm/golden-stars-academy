@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Golden Stars Academy</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" rel="stylesheet">
+<style>
+:root{--gold:#c9a84c;--dark:#1a2540;}
+body{background:#f0f4f8;font-family:"Segoe UI",sans-serif;}
+.pnav{background:var(--dark);}
+.pnav .brand span{color:var(--gold);font-weight:700;}
+.sidebar{min-height:100vh;background:#1e2d4a;padding-top:1rem;}
+.sidebar .nav-link{color:#a0aec0;border-radius:8px;margin:2px 8px;padding:10px 14px;}
+.sidebar .nav-link:hover,.sidebar .nav-link.active{background:rgba(201,168,76,.15);color:var(--gold);}
+.sidebar .nav-link i{margin-right:8px;}
+.card{border:none;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.07);}
+.table th{background:#f8f9fa;font-size:.82rem;text-transform:uppercase;letter-spacing:.5px;}
+.btn-gold{background:var(--gold);color:#fff;border:none;}
+.btn-gold:hover{background:#b8942e;color:#fff;}
+.flash-box{position:fixed;top:70px;right:20px;z-index:9999;min-width:300px;}
+</style>
+</head>
+<body>
+<nav class="navbar pnav px-3">
+  <span class="navbar-brand brand text-light"><i class="ti ti-school text-warning"></i> <span>Staff Portal</span></span>
+  <div class="d-flex align-items-center gap-2">
+    {% if staff is defined %}<span class="text-light small d-none d-md-inline">{{ staff.name }}</span>{% endif %}
+    <a href="/staff/logout" class="btn btn-sm btn-outline-light"><i class="ti ti-logout"></i></a>
+  </div>
+</nav>
+{% for m in flash_msgs %}
+<div class="flash-box alert alert-{{ 'danger' if m.cat=='error' else 'success' }} alert-dismissible fade show">{{ m.msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+{% endfor %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 sidebar d-none d-md-block">
+      <nav class="nav flex-column mt-2">
+        <a class="nav-link active" href="/staff/dashboard"><i class="ti ti-dashboard"></i> Dashboard</a>
+<a class="nav-link " href="/staff/students"><i class="ti ti-users"></i> Students</a>
+<a class="nav-link " href="/staff/assignments"><i class="ti ti-clipboard-list"></i> Assignments</a>
+<a class="nav-link " href="/staff/results"><i class="ti ti-chart-bar"></i> Results</a>
+
+        <hr style="border-color:#2d4a7a">
+        <a class="nav-link" href="/staff/logout"><i class="ti ti-logout"></i> Logout</a>
+      </nav>
+    </div>
+    <div class="col-md-10 p-4">
+      
+<h4 class="fw-bold mb-1">Welcome, {{ staff.name }}</h4>
+<p class="text-muted mb-4">{{ staff.subject }} &bull; Class: {{ staff.class_name or "Not assigned" }}</p>
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="card p-3 text-center" style="border-left:4px solid #c9a84c">
+      <div class="fs-2 fw-bold text-warning">{{ students|length }}</div>
+      <div class="small text-muted">My Students</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card p-3 text-center" style="border-left:4px solid #4299e1">
+      <div class="fs-2 fw-bold text-primary">{{ assignments|length }}</div>
+      <div class="small text-muted">Assignments</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card p-3 text-center" style="border-left:4px solid #e53e3e">
+      <div class="fs-2 fw-bold text-danger">{{ pending_subs|length }}</div>
+      <div class="small text-muted">Pending Grading</div>
+    </div>
+  </div>
+</div>
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card p-3 text-center h-100">
+      <i class="ti ti-users fs-1 text-warning"></i>
+      <h6 class="mt-2">Manage Students</h6>
+      <p class="small text-muted">Add, view or remove students</p>
+      <a href="/staff/students" class="btn btn-gold btn-sm">Open</a>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3 text-center h-100">
+      <i class="ti ti-clipboard-list fs-1 text-primary"></i>
+      <h6 class="mt-2">Assignments</h6>
+      <p class="small text-muted">Create tasks and grade submissions</p>
+      <a href="/staff/assignments" class="btn btn-gold btn-sm">Open</a>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3 text-center h-100">
+      <i class="ti ti-chart-bar fs-1 text-success"></i>
+      <h6 class="mt-2">Upload Results</h6>
+      <p class="small text-muted">Enter CA and exam scores</p>
+      <a href="/staff/results" class="btn btn-gold btn-sm">Open</a>
+    </div>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body></html>

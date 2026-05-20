@@ -1,0 +1,951 @@
+"""
+Run this once from your golden-stars/ folder:
+    python create_index.py
+
+It creates templates/index.html — the full public website.
+"""
+import os
+
+os.makedirs("templates", exist_ok=True)
+
+content = r"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Golden Stars Academy – GRA Gbessa, Abuja</title>
+<meta name="description" content="Golden Stars Academy is a co-educational day school in GRA Gbessa, Abuja offering Nursery, Primary, JSS and SSS education rooted in excellence, faith and character."/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--brand:#1a3a6b;--accent:#c0321a;--gold:#f59e0b;--bg:#fff;--bg2:#f5f6f8;--txt:#1c1c2e;--txt2:#5a5a72;--border:rgba(0,0,0,0.09);}
+body{font-family:'Segoe UI',Arial,sans-serif;color:var(--txt);background:var(--bg);}
+a{text-decoration:none;color:inherit;cursor:pointer;}
+.page{display:none;}.page.active{display:block;}
+
+/* TOPBAR */
+.topbar{background:var(--brand);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:7px 40px;font-size:12px;flex-wrap:wrap;gap:6px;}
+.topbar a{color:rgba(255,255,255,0.82);margin-right:14px;}
+.topbar a:hover{color:#fff;}
+
+/* NAV */
+nav{background:#fff;padding:0 40px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,0.07);}
+.nav-inner{display:flex;justify-content:space-between;align-items:center;height:70px;}
+.logo{display:flex;align-items:center;gap:12px;cursor:pointer;}
+.logo-name{font-size:15px;font-weight:700;color:var(--brand);line-height:1.2;}
+.logo-tag{font-size:11px;color:var(--txt2);}
+.nav-menu{display:flex;align-items:center;gap:2px;}
+.nav-item{position:relative;}
+.nav-link{display:flex;align-items:center;gap:4px;padding:22px 13px;font-size:13px;font-weight:600;color:var(--txt2);cursor:pointer;border-bottom:3px solid transparent;transition:color .15s,border-color .15s;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit;white-space:nowrap;}
+.nav-link:hover,.nav-link.active{color:var(--brand);border-bottom-color:var(--brand);}
+.chevron{font-size:10px;transition:transform .2s;opacity:.6;}
+.nav-item:hover .chevron{transform:rotate(180deg);}
+.dropdown{position:absolute;top:100%;left:0;background:#fff;min-width:210px;border-radius:0 0 12px 12px;box-shadow:0 8px 32px rgba(0,0,0,0.13);border:1px solid var(--border);border-top:3px solid var(--brand);opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .2s,transform .2s,visibility .2s;z-index:400;}
+.nav-item:hover .dropdown{opacity:1;visibility:visible;transform:translateY(0);}
+.dd-item{display:block;padding:12px 18px;font-size:13px;color:var(--txt2);transition:background .15s,color .15s;cursor:pointer;}
+.dd-item:hover{background:var(--bg2);color:var(--brand);}
+.nav-cta{background:var(--accent);color:#fff;border:none;padding:9px 20px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;margin-left:8px;}
+.hamburger{display:none;background:none;border:none;font-size:26px;cursor:pointer;color:var(--brand);}
+.mob-menu{display:none;position:fixed;inset:0;background:#fff;z-index:500;overflow-y:auto;padding:20px;}
+.mob-menu.open{display:block;}
+.mob-close{float:right;font-size:28px;background:none;border:none;cursor:pointer;color:var(--brand);}
+.mob-logo{display:flex;align-items:center;gap:10px;margin-bottom:24px;clear:both;}
+.mob-section h4{font-size:13px;font-weight:700;color:var(--brand);padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+.mob-sub a{display:block;padding:9px 14px;font-size:13px;color:var(--txt2);}
+
+/* PAGE BANNER */
+.page-banner{background:linear-gradient(135deg,#0f2d5a,var(--brand),#1a5c7a);color:#fff;padding:60px 40px;text-align:center;}
+.page-banner h1{font-size:34px;font-weight:800;margin-bottom:10px;}
+.page-banner p{font-size:14px;opacity:.8;max-width:560px;margin:0 auto;}
+.breadcrumb{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;font-size:12px;opacity:.65;}
+.breadcrumb span{color:var(--gold);}
+
+/* SECTIONS */
+.sec{padding:64px 40px;}.sec-alt{background:var(--bg2);}
+.sec-dark{background:var(--brand);color:#fff;}
+.sec-tag{display:inline-block;background:#e8eef8;color:var(--brand);font-size:11px;padding:3px 13px;border-radius:20px;font-weight:600;margin-bottom:10px;}
+.sec-dark .sec-tag{background:rgba(255,255,255,.15);color:#fff;}
+.sec-h{font-size:28px;font-weight:700;margin-bottom:10px;}
+.sec-p{font-size:14px;color:var(--txt2);max-width:600px;line-height:1.85;margin-bottom:36px;}
+.sec-dark .sec-p{color:rgba(255,255,255,.72);}
+.tc{text-align:center;}.tc .sec-p{margin-left:auto;margin-right:auto;}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center;}
+.auto-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+
+/* CARDS */
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:22px 18px;transition:border-color .2s,transform .2s,box-shadow .2s;}
+.card:hover{border-color:var(--brand);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.08);}
+.card-icon{width:48px;height:48px;border-radius:11px;background:#e8eef8;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+.card-icon i{color:var(--brand);font-size:24px;}
+.card h3{font-size:14px;font-weight:700;margin-bottom:7px;}
+.card p{font-size:13px;color:var(--txt2);line-height:1.65;}
+.badge-tag{display:inline-block;margin-top:9px;font-size:11px;background:var(--bg2);padding:3px 10px;border-radius:10px;color:var(--txt2);}
+.img-box{border-radius:16px;overflow:hidden;height:380px;background:var(--brand);display:flex;align-items:center;justify-content:center;color:#fff;flex-direction:column;gap:10px;position:relative;}
+.img-box img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.img-box i{font-size:72px;opacity:.35;position:relative;}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.pill{background:#e8eef8;color:var(--brand);padding:6px 15px;border-radius:20px;font-size:12px;font-weight:500;}
+.hl-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px;}
+.hl-card{background:#e8eef8;border-radius:10px;padding:14px;text-align:center;}
+.hl-val{font-size:18px;font-weight:700;color:var(--brand);}
+.hl-lbl{font-size:11px;color:var(--txt2);margin-top:3px;}
+
+/* TEAM */
+.team-card{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;text-align:center;transition:box-shadow .2s,transform .2s;}
+.team-card:hover{box-shadow:0 8px 28px rgba(0,0,0,0.1);transform:translateY(-3px);}
+.team-photo{height:180px;background:var(--brand);display:flex;align-items:center;justify-content:center;font-size:52px;color:rgba(255,255,255,.3);overflow:hidden;position:relative;}
+.team-photo img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.team-info{padding:16px 14px;}
+.team-name{font-size:14px;font-weight:700;margin-bottom:3px;}
+.team-role{font-size:12px;color:var(--txt2);margin-bottom:4px;}
+.team-bio{font-size:11px;color:var(--txt2);line-height:1.5;}
+
+/* CAROUSEL */
+.carousel-wrap{position:relative;overflow:hidden;height:480px;background:var(--brand);}
+.carousel-slide{position:absolute;inset:0;opacity:0;transition:opacity .8s ease;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f2d5a,var(--brand),#1a5c7a);}
+.carousel-slide.active{opacity:1;}
+.carousel-slide img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:.35;}
+.carousel-content{position:relative;z-index:2;text-align:center;color:#fff;padding:40px;max-width:780px;}
+.carousel-quote{font-size:26px;font-weight:700;line-height:1.4;margin-bottom:20px;font-style:italic;}
+.carousel-quote em{color:var(--gold);font-style:normal;}
+.carousel-author{font-size:14px;opacity:.75;}
+.carousel-dots{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:3;}
+.c-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:background .2s;}
+.c-dot.active{background:#fff;}
+.carousel-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:3;background:rgba(255,255,255,.15);border:none;color:#fff;width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;}
+.carousel-nav:hover{background:rgba(255,255,255,.3);}
+.carousel-nav.prev{left:16px;}.carousel-nav.next{right:16px;}
+
+/* STATS BAR */
+.stats-bar{background:#0f2d5a;color:#fff;padding:20px 40px;display:flex;flex-wrap:wrap;}
+.stat-item{flex:1;min-width:130px;text-align:center;border-right:1px solid rgba(255,255,255,.1);padding:8px 16px;}
+.stat-item:last-child{border-right:none;}
+.stat-num{font-size:28px;font-weight:800;color:var(--gold);}
+.stat-sub{font-size:11px;opacity:.65;margin-top:3px;text-transform:uppercase;letter-spacing:.04em;}
+.stat-growth{font-size:10px;color:#4ade80;margin-top:2px;}
+
+/* TICKER */
+.ticker-wrap{background:var(--brand);color:#fff;padding:9px 0;overflow:hidden;border-bottom:2px solid var(--gold);}
+.ticker-label{background:var(--gold);color:#000;font-size:11px;font-weight:800;padding:4px 14px;margin-right:12px;white-space:nowrap;display:inline-block;vertical-align:middle;}
+.ticker-track{display:inline-block;overflow:hidden;width:calc(100% - 120px);vertical-align:middle;}
+.ticker-inner{display:inline-flex;animation:tickerScroll 50s linear infinite;white-space:nowrap;}
+.ticker-inner:hover{animation-play-state:paused;}
+.ticker-item{font-size:12px;font-weight:500;padding:0 32px;opacity:.9;}
+.ticker-item::after{content:'•';margin-left:32px;opacity:.4;}
+@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* NOTICE CARD */
+.notice-card{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:24px;flex:0 0 290px;min-width:240px;}
+.notice-card h3{font-size:13px;font-weight:600;margin-bottom:14px;opacity:.9;}
+.n-item{background:rgba(255,255,255,.07);border-radius:8px;padding:10px 13px;margin-bottom:9px;display:flex;gap:9px;align-items:flex-start;}
+.n-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);margin-top:5px;flex-shrink:0;}
+.n-item p{font-size:12px;opacity:.88;line-height:1.4;}
+.n-item span{font-size:10px;opacity:.5;display:block;margin-top:2px;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0f2d5a,var(--brand),#1a5c7a);color:#fff;padding:80px 40px 70px;display:flex;gap:44px;align-items:center;flex-wrap:wrap;}
+.hero-content{flex:1;min-width:280px;}
+.hero-tag{background:rgba(255,255,255,.13);display:inline-block;padding:4px 14px;border-radius:20px;font-size:11px;margin-bottom:16px;letter-spacing:.04em;}
+.hero h1{font-size:38px;font-weight:700;line-height:1.15;margin-bottom:14px;}
+.hero h1 em{color:var(--gold);font-style:normal;}
+.hero-sub{font-size:15px;line-height:1.85;opacity:.9;max-width:500px;margin-bottom:28px;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-p{background:var(--accent);color:#fff;border:none;padding:13px 26px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-p:hover{opacity:.9;}
+.btn-o{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4);padding:13px 26px;border-radius:8px;font-size:14px;cursor:pointer;}
+.btn-o:hover{border-color:rgba(255,255,255,.8);}
+.hero-stats{display:flex;gap:28px;margin-top:38px;flex-wrap:wrap;}
+.sn{font-size:28px;font-weight:700;color:var(--gold);}
+.sl{font-size:11px;opacity:.65;margin-top:2px;}
+
+/* FEES */
+.fee-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:22px 16px;text-align:center;transition:border-color .2s,transform .2s;}
+.fee-card:hover{border-color:var(--brand);transform:translateY(-2px);}
+.fee-level{font-size:14px;font-weight:700;color:var(--brand);}
+.fee-amount{font-size:24px;font-weight:700;color:var(--accent);margin:10px 0;}
+.fee-term{font-size:12px;color:var(--txt2);}
+.fee-ok{display:inline-block;margin-top:8px;font-size:11px;background:#dcfce7;color:#16a34a;padding:3px 10px;border-radius:10px;font-weight:600;}
+
+/* GALLERY */
+.gal-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;}
+.gal-tab{padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:#fff;font-size:12px;font-weight:500;cursor:pointer;color:var(--txt2);transition:all .15s;}
+.gal-tab.active{background:var(--brand);color:#fff;border-color:var(--brand);}
+.gal-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:165px;gap:12px;}
+.g-item{border-radius:12px;overflow:hidden;position:relative;background:var(--brand);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.g-item:first-child{grid-row:span 2;}
+.g-item img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;transition:transform .3s;}
+.g-item:hover img{transform:scale(1.05);}
+.g-ph{font-size:44px;opacity:.2;}
+.g-lbl{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff;padding:10px 12px;font-size:12px;}
+
+/* NEWS */
+.news-card{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:box-shadow .2s,transform .2s;}
+.news-card:hover{box-shadow:0 6px 24px rgba(0,0,0,0.09);transform:translateY(-2px);}
+.news-thumb{height:150px;background:var(--brand);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
+.news-thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.news-body{padding:18px;}
+.news-date{font-size:11px;color:var(--txt2);margin-bottom:8px;}
+.news-card h3{font-size:15px;font-weight:700;margin-bottom:8px;line-height:1.4;}
+.news-card p{font-size:13px;color:var(--txt2);line-height:1.7;}
+
+/* CALENDAR TABLE */
+.cal-table-wrap{background:#fff;border-radius:14px;border:1px solid var(--border);overflow:hidden;}
+.cal-tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.cal-tbl thead tr{background:#0f172a;color:#fff;}
+.cal-tbl thead th{padding:13px 18px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+.cal-tbl tbody tr{border-bottom:1px solid #f0f2f5;transition:background .15s;}
+.cal-tbl tbody tr:hover{background:#f8f9fc;}
+.cal-tbl td{padding:12px 18px;vertical-align:top;}
+.cal-type-badge{display:inline-block;font-size:10px;padding:2px 9px;border-radius:10px;font-weight:700;margin-bottom:4px;}
+.filter-bar{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:18px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;}
+.search-box{position:relative;flex:1;min-width:200px;}
+.search-box i{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--txt2);font-size:16px;}
+.search-box input{width:100%;padding:9px 12px 9px 36px;border:1px solid var(--border);border-radius:8px;font-size:13px;outline:none;font-family:inherit;}
+.filter-btns{display:flex;flex-wrap:wrap;gap:8px;}
+.fbtn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:#fff;font-size:12px;font-weight:500;cursor:pointer;color:var(--txt2);font-family:inherit;}
+.fbtn.active{background:#0f172a;color:#fff;border-color:#0f172a;}
+
+/* STEPS */
+.steps{max-width:700px;margin:0 auto;}
+.step{display:flex;gap:20px;padding-bottom:28px;position:relative;}
+.step:not(:last-child)::after{content:'';position:absolute;left:19px;top:40px;bottom:0;width:2px;background:#e8eef8;}
+.step-n{width:40px;height:40px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;}
+.step h4{font-size:14px;font-weight:700;margin-bottom:5px;}
+.step p{font-size:13px;color:var(--txt2);line-height:1.7;}
+
+/* FEAT */
+.feat{display:flex;gap:13px;align-items:flex-start;}
+.fi{width:42px;height:42px;border-radius:10px;background:#e8eef8;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fi i{color:var(--brand);font-size:20px;}
+.feat h4{font-size:13px;font-weight:700;margin-bottom:4px;}
+.feat p{font-size:12px;color:var(--txt2);line-height:1.65;}
+
+/* TESTI */
+.testi-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:22px;}
+.t-stars{color:var(--gold);font-size:14px;margin-bottom:10px;}
+.testi-card blockquote{font-size:13px;color:var(--txt2);line-height:1.75;font-style:italic;margin-bottom:14px;}
+.t-auth{display:flex;align-items:center;gap:10px;}
+.t-av{width:36px;height:36px;border-radius:50%;background:#e8eef8;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:var(--brand);}
+
+/* CONTACT */
+.ci{display:flex;gap:12px;align-items:flex-start;margin-bottom:20px;}
+.ci-ic{width:40px;height:40px;border-radius:10px;background:#e8eef8;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ci-ic i{color:var(--brand);font-size:18px;}
+.ci h4{font-size:13px;font-weight:700;margin-bottom:3px;}
+.ci p{font-size:13px;color:var(--txt2);}
+.cf{background:#fff;border:1px solid var(--border);border-radius:14px;padding:26px;}
+.cf h3{font-size:16px;font-weight:700;margin-bottom:18px;}
+.fr{margin-bottom:13px;}
+.fr label{display:block;font-size:12px;font-weight:600;margin-bottom:5px;color:var(--txt2);}
+.fr input,.fr select,.fr textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:7px;font-size:13px;outline:none;font-family:inherit;}
+.fr input:focus,.fr select:focus,.fr textarea:focus{border-color:var(--brand);}
+.fr textarea{height:85px;resize:none;}
+.cf-btn{width:100%;background:var(--brand);color:#fff;border:none;padding:12px;border-radius:7px;font-size:14px;font-weight:600;cursor:pointer;}
+
+/* MOTTO + FOOTER */
+.motto-band{background:var(--accent);text-align:center;padding:12px;font-size:13px;font-weight:700;letter-spacing:.1em;color:#fff;}
+footer{background:var(--brand);color:#fff;padding:50px 40px 20px;}
+.fg{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:30px;margin-bottom:30px;}
+.fb-brand{display:flex;align-items:center;gap:11px;margin-bottom:12px;}
+.fb-name{font-size:14px;font-weight:700;}.fb-tag{font-size:11px;opacity:.5;margin-top:2px;}
+.fb p{font-size:12px;opacity:.58;line-height:1.75;max-width:230px;}
+.fc h4{font-size:11px;font-weight:700;margin-bottom:13px;opacity:.4;letter-spacing:.06em;text-transform:uppercase;}
+.fc a{display:block;font-size:13px;color:rgba(255,255,255,.7);margin-bottom:9px;cursor:pointer;}
+.fc a:hover{color:#fff;}
+.fbot{border-top:1px solid rgba(255,255,255,.1);padding-top:18px;display:flex;justify-content:space-between;font-size:12px;opacity:.42;flex-wrap:wrap;gap:8px;}
+.soc{display:flex;gap:8px;margin-top:14px;}
+.sb{width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;}
+.sb:hover{background:rgba(255,255,255,.12);}
+.sb i{font-size:16px;}
+
+/* SKELETON */
+.sk{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:6px;min-height:14px;}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+@media(max-width:900px){
+  .split,.fg{grid-template-columns:1fr;}
+  .grid-3{grid-template-columns:1fr 1fr;}
+  .gal-grid{grid-template-columns:1fr 1fr;}
+  .g-item:first-child{grid-row:span 1;}
+  nav .nav-menu,.nav-cta{display:none;}
+  .hamburger{display:block;}
+  .sec,.hero,.page-banner{padding:48px 20px;}
+  .topbar,footer{padding-left:20px;padding-right:20px;}
+  .stats-bar{padding:14px 20px;}
+}
+@media(max-width:560px){
+  .grid-3{grid-template-columns:1fr;}
+  .hero h1{font-size:24px;}
+  .carousel-quote{font-size:18px;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div>
+    <a href="#"><i class="ti ti-user-circle"></i> Parent Login</a>
+    <a href="#"><i class="ti ti-users"></i> Staff</a>
+    <a href="#"><i class="ti ti-school"></i> Student</a>
+  </div>
+  <div>
+    <a id="tb-phone"><i class="ti ti-phone"></i> +234 803 442 8823</a>
+    <a id="tb-email"><i class="ti ti-mail"></i> info@goldenstarsacademy.com</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo" onclick="showPage('home')">
+      <div id="navLogoWrap" style="width:50px;height:50px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#e8eef8;display:flex;align-items:center;justify-content:center;">
+        <svg width="50" height="50" viewBox="0 0 300 340" xmlns="http://www.w3.org/2000/svg" id="navLogoSvg">
+          <path d="M150 8 L272 54 L272 182 Q272 284 150 332 Q28 284 28 182 L28 54 Z" fill="#E8B830"/>
+          <path d="M150 22 L258 62 L258 182 Q258 272 150 316 Q42 272 42 182 L42 62 Z" fill="#CC2200"/>
+          <path d="M150 72 L245 104 L245 210 Q245 260 150 296 Q55 260 55 210 L55 104 Z" fill="#fff"/>
+          <path d="M55 220 Q55 260 150 296 Q245 260 245 220 Z" fill="#F5C518"/>
+          <path d="M65 110 L235 110 L235 215 Q235 255 150 285 Q65 255 65 215 Z" fill="#1a3575"/>
+          <polygon points="150,95 155,110 171,110 158,120 163,135 150,126 137,135 142,120 129,110 145,110" fill="#F5C518"/>
+          <text x="150" y="276" text-anchor="middle" font-family="Georgia,serif" font-size="13" font-weight="bold" fill="#1a3575" letter-spacing="1.5">GOD IS ABLE</text>
+          <path id="a1" d="M68 62 A96 96 0 0 1 232 62" fill="none"/>
+          <text font-family="Georgia,serif" font-size="14" font-weight="bold" fill="#fff"><textPath href="#a1" startOffset="10%">GOLDEN STARS</textPath></text>
+          <path id="a2" d="M80 85 A84 84 0 0 1 220 85" fill="none"/>
+          <text font-family="Georgia,serif" font-size="11" font-weight="bold" fill="#F5C518"><textPath href="#a2" startOffset="18%">ACADEMY · ABUJA</textPath></text>
+          <path d="M150 8 L272 54 L272 182 Q272 284 150 332 Q28 284 28 182 L28 54 Z" fill="none" stroke="#E8B830" stroke-width="3.5"/>
+        </svg>
+      </div>
+      <div><div class="logo-name">Golden Stars Academy</div><div class="logo-tag" id="navTagline">God is Able · GRA Gbessa, Abuja</div></div>
+    </div>
+    <div class="nav-menu">
+      <div class="nav-item"><button class="nav-link active" onclick="showPage('home')">Home</button></div>
+      <div class="nav-item">
+        <button class="nav-link">About Us <span class="chevron">▾</span></button>
+        <div class="dropdown">
+          <a class="dd-item" onclick="showPage('who-we-are')">Who We Are</a>
+          <a class="dd-item" onclick="showPage('mission')">Our Mission</a>
+          <a class="dd-item" onclick="showPage('vision')">Vision</a>
+          <a class="dd-item" onclick="showPage('core-values')">Core Values</a>
+          <a class="dd-item" onclick="showPage('board')">Board Members</a>
+          <a class="dd-item" onclick="showPage('management')">Management</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button class="nav-link">Academics <span class="chevron">▾</span></button>
+        <div class="dropdown">
+          <a class="dd-item" onclick="showPage('curriculum')">Curriculum</a>
+          <a class="dd-item" onclick="showPage('admissions')">Admission Procedure</a>
+          <a class="dd-item" onclick="showPage('cal-page')">Academic Calendar</a>
+          <a class="dd-item" onclick="showPage('fees-page')">Fee Schedule</a>
+          <a class="dd-item" onclick="showPage('tour')">Take A Tour</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button class="nav-link">Resources <span class="chevron">▾</span></button>
+        <div class="dropdown">
+          <a class="dd-item" onclick="showPage('insights')">Insights</a>
+          <a class="dd-item" onclick="showPage('facility')">Our Facility</a>
+          <a class="dd-item" onclick="showPage('gallery')">Gallery</a>
+        </div>
+      </div>
+      <div class="nav-item"><button class="nav-link" onclick="showPage('contact')">Contact</button></div>
+    </div>
+    <button class="nav-cta" onclick="showPage('admissions')">Apply Now</button>
+    <button class="hamburger" onclick="toggleMob()">☰</button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mobMenu">
+  <button class="mob-close" onclick="toggleMob()">✕</button>
+  <div class="mob-logo"><svg width="40" height="40" viewBox="0 0 300 340" xmlns="http://www.w3.org/2000/svg" style="border-radius:50%"><path d="M150 8 L272 54 L272 182 Q272 284 150 332 Q28 284 28 182 L28 54 Z" fill="#E8B830"/><path d="M150 22 L258 62 L258 182 Q258 272 150 316 Q42 272 42 182 L42 62 Z" fill="#CC2200"/><path d="M65 110 L235 110 L235 215 Q235 255 150 285 Q65 255 65 215 Z" fill="#1a3575"/><polygon points="150,95 155,110 171,110 158,120 163,135 150,126 137,135 142,120 129,110 145,110" fill="#F5C518"/></svg><span style="font-size:14px;font-weight:700;color:var(--brand)">Golden Stars Academy</span></div>
+  <div class="mob-section"><h4 onclick="showPage('home');toggleMob()">Home</h4></div>
+  <div class="mob-section"><h4>About Us</h4><div class="mob-sub"><a onclick="showPage('who-we-are');toggleMob()">Who We Are</a><a onclick="showPage('mission');toggleMob()">Our Mission</a><a onclick="showPage('vision');toggleMob()">Vision</a><a onclick="showPage('core-values');toggleMob()">Core Values</a><a onclick="showPage('board');toggleMob()">Board Members</a><a onclick="showPage('management');toggleMob()">Management</a></div></div>
+  <div class="mob-section"><h4>Academics</h4><div class="mob-sub"><a onclick="showPage('curriculum');toggleMob()">Curriculum</a><a onclick="showPage('admissions');toggleMob()">Admission Procedure</a><a onclick="showPage('cal-page');toggleMob()">Academic Calendar</a><a onclick="showPage('fees-page');toggleMob()">Fee Schedule</a><a onclick="showPage('tour');toggleMob()">Take A Tour</a></div></div>
+  <div class="mob-section"><h4>Resources</h4><div class="mob-sub"><a onclick="showPage('insights');toggleMob()">Insights</a><a onclick="showPage('facility');toggleMob()">Our Facility</a><a onclick="showPage('gallery');toggleMob()">Gallery</a></div></div>
+  <div class="mob-section"><h4 onclick="showPage('contact');toggleMob()">Contact</h4></div>
+  <button class="nav-cta" style="width:100%;margin-top:16px;padding:13px;" onclick="showPage('admissions');toggleMob()">Apply Now</button>
+</div>
+
+<!-- ══════════════ HOME ══════════════ -->
+<div class="page active" id="pg-home">
+  <div class="carousel-wrap">
+    <button class="carousel-nav prev" onclick="moveCarousel(-1)">‹</button>
+    <button class="carousel-nav next" onclick="moveCarousel(1)">›</button>
+    <div class="carousel-slide active"><div class="carousel-content"><div class="carousel-quote">"Education is the <em>most powerful weapon</em> you can use to change the world."</div><div class="carousel-author">— Nelson Mandela · Inspiring Excellence at Golden Stars Academy</div></div></div>
+    <div class="carousel-slide"><div class="carousel-content"><div class="carousel-quote">"The <em>function of education</em> is to teach one to think intensively and to think critically."</div><div class="carousel-author">— Martin Luther King Jr. · Our Guiding Philosophy</div></div></div>
+    <div class="carousel-slide"><div class="carousel-content"><div class="carousel-quote">"Tell me and I forget. Teach me and I remember. <em>Involve me and I learn.</em>"</div><div class="carousel-author">— Benjamin Franklin · Active Learning at Golden Stars</div></div></div>
+    <div class="carousel-slide"><div class="carousel-content"><div class="carousel-quote">"Children must be taught <em>how to think</em>, not what to think."</div><div class="carousel-author">— Margaret Mead · Critical Thinking at the Core</div></div></div>
+    <div class="carousel-slide"><div class="carousel-content"><div class="carousel-quote">"<em>God is Able</em> — our faith anchors our pursuit of excellence, character, and service."</div><div class="carousel-author">— The Golden Stars Academy Motto · Est. 2011, GRA Gbessa, Abuja</div></div></div>
+    <div class="carousel-dots" id="carouselDots"></div>
+  </div>
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-num" id="sNursery">—</div><div class="stat-sub">Nursery &amp; Primary</div><div class="stat-growth">↑ Growing</div></div>
+    <div class="stat-item"><div class="stat-num" id="sJSS">—</div><div class="stat-sub">JSS Students</div><div class="stat-growth">↑ Growing</div></div>
+    <div class="stat-item"><div class="stat-num" id="sSSS">—</div><div class="stat-sub">SSS Students</div><div class="stat-growth">↑ Growing</div></div>
+    <div class="stat-item"><div class="stat-num" id="sTeachers">40+</div><div class="stat-sub">Qualified Teachers</div><div class="stat-growth">↑ Experienced</div></div>
+    <div class="stat-item"><div class="stat-num">14</div><div class="stat-sub">Years of Excellence</div><div class="stat-growth">Est. 2011</div></div>
+  </div>
+  <div class="ticker-wrap">
+    <span class="ticker-label">📢 LATEST</span>
+    <div class="ticker-track"><div class="ticker-inner" id="tickerInner">
+      <span class="ticker-item">Applications open for 2025/2026 — Limited spaces available</span>
+      <span class="ticker-item">PTA Meeting: Saturday 23rd May 2026 — All parents invited</span>
+      <span class="ticker-item">Mid-Term Break: 4th–5th June 2026</span>
+      <span class="ticker-item">2nd C.A Test: 19th June 2026</span>
+      <span class="ticker-item">Examination Period: 6th–10th July 2026</span>
+      <span class="ticker-item">Graduation Day: 17th July 2026</span>
+      <span class="ticker-item">Golden Stars Academy — God is Able · GRA Gbessa, Abuja</span>
+      <span class="ticker-item">Applications open for 2025/2026 — Limited spaces available</span>
+      <span class="ticker-item">PTA Meeting: Saturday 23rd May 2026 — All parents invited</span>
+      <span class="ticker-item">Mid-Term Break: 4th–5th June 2026</span>
+      <span class="ticker-item">2nd C.A Test: 19th June 2026</span>
+      <span class="ticker-item">Examination Period: 6th–10th July 2026</span>
+      <span class="ticker-item">Graduation Day: 17th July 2026</span>
+      <span class="ticker-item">Golden Stars Academy — God is Able · GRA Gbessa, Abuja</span>
+    </div></div>
+  </div>
+  <div class="sec">
+    <div class="tc" style="margin-bottom:32px;"><div class="sec-tag">Why Choose Us</div><h2 class="sec-h">A School Where Every Child Thrives</h2></div>
+    <div class="grid-3">
+      <div class="feat"><div class="fi"><i class="ti ti-map-pin"></i></div><div><h4>Secure, Serene Location</h4><p>Situated in the tranquil GRA Gbessa area of Abuja, away from noise and distractions.</p></div></div>
+      <div class="feat"><div class="fi"><i class="ti ti-chart-bar"></i></div><div><h4>Strong Academic Track Record</h4><p>Consistent excellent WAEC/NECO results with many alumni in top universities.</p></div></div>
+      <div class="feat"><div class="fi"><i class="ti ti-users"></i></div><div><h4>Experienced, Caring Teachers</h4><p>Qualified and passionate educators dedicated to each child's growth.</p></div></div>
+      <div class="feat"><div class="fi"><i class="ti ti-award"></i></div><div><h4>Balanced Holistic Education</h4><p>Academics, character, and 21st-century skills woven into every school day.</p></div></div>
+      <div class="feat"><div class="fi"><i class="ti ti-heart"></i></div><div><h4>Faith-Based &amp; Inclusive</h4><p>Welcoming every culture, language, and religious background.</p></div></div>
+      <div class="feat"><div class="fi"><i class="ti ti-rocket"></i></div><div><h4>Future-Ready Graduates</h4><p>Students leave equipped with leadership, entrepreneurship, and digital skills.</p></div></div>
+    </div>
+  </div>
+  <div class="sec sec-alt">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;flex-wrap:wrap;gap:10px;">
+      <div><div class="sec-tag">Insights</div><h2 class="sec-h" style="margin-bottom:0;">Latest News</h2></div>
+      <button class="nav-cta" onclick="showPage('insights')" style="margin-left:0;">View All</button>
+    </div>
+    <div class="auto-grid" id="homeNews"><div class="news-card"><div class="news-thumb"></div><div class="news-body"><div class="sk" style="width:80px;height:10px;margin-bottom:10px;"></div><div class="sk" style="margin-bottom:8px;"></div><div class="sk" style="width:75%;"></div></div></div></div>
+  </div>
+  <div class="sec">
+    <div class="tc" style="margin-bottom:30px;"><div class="sec-tag">Testimonials</div><h2 class="sec-h">What Parents &amp; Alumni Say</h2></div>
+    <div class="grid-3">
+      <div class="testi-card"><div class="t-stars">★★★★★</div><blockquote>"Golden Stars Academy has been a wonderful choice for our children. The teachers are dedicated and the school's values align perfectly with ours."</blockquote><div class="t-auth"><div class="t-av">OA</div><div><div style="font-size:13px;font-weight:700;">Mrs. Okonkwo Adaeze</div><div style="font-size:11px;color:var(--txt2);">Parent · JSS Two</div></div></div></div>
+      <div class="testi-card"><div class="t-stars">★★★★★</div><blockquote>"The school gave me not just academic knowledge but also the confidence and leadership skills I needed. Proud to be a Golden Stars alumnus."</blockquote><div class="t-auth"><div class="t-av">EI</div><div><div style="font-size:13px;font-weight:700;">Emmanuel Idris</div><div style="font-size:11px;color:var(--txt2);">Alumni · Class of 2022</div></div></div></div>
+      <div class="testi-card"><div class="t-stars">★★★★★</div><blockquote>"What sets Golden Stars apart is the genuine care the teachers show every child. My daughter has flourished academically and socially."</blockquote><div class="t-auth"><div class="t-av">FA</div><div><div style="font-size:13px;font-weight:700;">Mr. Fatai Akinola</div><div style="font-size:11px;color:var(--txt2);">Parent · Primary 5</div></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ABOUT PAGES ══ -->
+<div class="page" id="pg-who-we-are">
+  <div class="page-banner"><h1>Who We Are</h1><p>Our story, our people, and the values that guide us</p><div class="breadcrumb">Home <span>›</span> About Us <span>›</span> Who We Are</div></div>
+  <div class="sec"><div class="split">
+    <div class="img-box"><i class="ti ti-building-school"></i></div>
+    <div><div class="sec-tag">Our Story</div><h2 class="sec-h">Founded on Faith, Driven by <span style="color:var(--brand)">Excellence</span></h2>
+    <p style="font-size:14px;line-height:1.85;color:var(--txt2);margin-bottom:16px;">Founded in September 2011 by visionary educationists Daniel Ayo David and his wife, Golden Stars Academy was built from nearly two decades of hands-on experience nurturing young minds.</p>
+    <p style="font-size:14px;line-height:1.85;color:var(--txt2);margin-bottom:16px;">Driven by faith and a deep commitment to holistic development, they created a school where academic rigour meets character formation — a place where every child is seen, valued, and empowered.</p>
+    <div class="pills"><span class="pill">Faith-based</span><span class="pill">Co-educational</span><span class="pill">Inclusive community</span><span class="pill">Safe &amp; serene</span></div>
+    <div class="hl-cards"><div class="hl-card"><div class="hl-val">2011</div><div class="hl-lbl">Year Founded</div></div><div class="hl-card"><div class="hl-val">GRA Gbessa</div><div class="hl-lbl">Abuja Location</div></div><div class="hl-card"><div class="hl-val">5 Levels</div><div class="hl-lbl">Toddler → SSS</div></div></div>
+    </div>
+  </div></div>
+</div>
+
+<div class="page" id="pg-mission">
+  <div class="page-banner"><h1>Our Mission</h1><p>What we set out to achieve every single day</p><div class="breadcrumb">Home <span>›</span> About Us <span>›</span> Our Mission</div></div>
+  <div class="sec"><div class="split">
+    <div><div class="sec-tag">Mission Statement</div><h2 class="sec-h">Shaping Lives with Purpose</h2>
+    <p style="font-size:17px;line-height:1.9;color:var(--txt2);font-style:italic;border-left:4px solid var(--brand);padding-left:20px;margin-bottom:0;">"To deliver a holistic, faith-based education that combines academic brilliance, character development, and 21st-century skills in a safe and inclusive environment."</p></div>
+    <div class="grid-2">
+      <div style="background:#e8eef8;border-radius:14px;padding:22px;text-align:center;"><div style="font-size:36px;margin-bottom:10px;">🎓</div><h4 style="font-size:13px;font-weight:700;margin-bottom:5px;">Academic Excellence</h4><p style="font-size:12px;color:var(--txt2);">Rigorous curriculum delivering outstanding results</p></div>
+      <div style="background:#fef3e8;border-radius:14px;padding:22px;text-align:center;"><div style="font-size:36px;margin-bottom:10px;">🙏</div><h4 style="font-size:13px;font-weight:700;margin-bottom:5px;">Faith &amp; Character</h4><p style="font-size:12px;color:var(--txt2);">Building moral courage and strong values</p></div>
+      <div style="background:#e8f5ee;border-radius:14px;padding:22px;text-align:center;"><div style="font-size:36px;margin-bottom:10px;">🌍</div><h4 style="font-size:13px;font-weight:700;margin-bottom:5px;">Global Citizenship</h4><p style="font-size:12px;color:var(--txt2);">Preparing students for a changing world</p></div>
+      <div style="background:#f0e8f8;border-radius:14px;padding:22px;text-align:center;"><div style="font-size:36px;margin-bottom:10px;">💡</div><h4 style="font-size:13px;font-weight:700;margin-bottom:5px;">21st Century Skills</h4><p style="font-size:12px;color:var(--txt2);">Critical thinking, creativity &amp; digital literacy</p></div>
+    </div>
+  </div></div>
+</div>
+
+<div class="page" id="pg-vision">
+  <div class="page-banner"><h1>Vision</h1><p>Where we are going and what we believe</p><div class="breadcrumb">Home <span>›</span> About Us <span>›</span> Vision</div></div>
+  <div class="sec tc">
+    <div class="sec-tag">Our Vision</div><h2 class="sec-h">Raising World-Class Leaders</h2>
+    <p style="font-size:17px;line-height:1.9;color:var(--txt2);font-style:italic;max-width:700px;margin:0 auto 40px;border-left:4px solid var(--brand);text-align:left;padding-left:20px;">"To raise world-class leaders equipped with excellence, integrity, and compassion to positively transform society and bring glory to God."</p>
+    <div class="grid-3" style="text-align:left;max-width:900px;margin:0 auto;">
+      <div class="card"><div class="card-icon"><i class="ti ti-eye"></i></div><h3>Strategic Vision</h3><p>Becoming the leading faith-based co-educational institution in Abuja, recognised for producing well-rounded graduates.</p></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-flag"></i></div><h3>Motto: "God is Able"</h3><p>Our motto is the foundation of everything we do — a daily reminder that with faith and hard work, no goal is out of reach.</p></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-trending-up"></i></div><h3>Our Future</h3><p>Expanding facilities, deepening programmes, and growing a community of alumni who lead with purpose across Nigeria.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="pg-core-values">
+  <div class="page-banner"><h1>Core Values</h1><p>The principles that guide everything we do</p><div class="breadcrumb">Home <span>›</span> About Us <span>›</span> Core Values</div></div>
+  <div class="sec">
+    <div class="tc" style="margin-bottom:36px;"><div class="sec-tag">What We Stand For</div><h2 class="sec-h">Our Six Core Values</h2></div>
+    <div class="auto-grid">
+      <div class="card"><div class="card-icon"><i class="ti ti-star"></i></div><h3>Excellence</h3><p>Striving for the highest standards in all we do — academically, morally, and socially.</p></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-shield-check"></i></div><h3>Integrity</h3><p>Building honesty, accountability, and moral courage in every student and staff member.</p></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-heart"></i></div><h3>Faith</h3><p>Anchoring our community in reverence for God and a spirit of gratitude and service.</p></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-globe"></i></div><h3>Inclusivity</h3><p>Celebrating diversity across tribe, language, and faith in our united community.</p></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-bulb"></i></div><h3>Innovation</h3><p>Preparing students with critical thinking and creativity for a rapidly changing world.</p></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-hand-heart"></i></div><h3>Compassion</h3><p>Developing empathetic, service-oriented leaders who genuinely care for others.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- BOARD -->
+<div class="page" id="pg-board">
+  <div class="page-banner"><h1>Board Members</h1><p>Distinguished leaders providing strategic oversight</p><div class="breadcrumb">Home <span>›</span> About Us <span>›</span> Board Members</div></div>
+  <div class="sec">
+    <div class="sec-tag">Board of Governors</div><h2 class="sec-h">Our Board of Governors</h2>
+    <p class="sec-p">These distinguished leaders provide strategic oversight and governance for Golden Stars Academy.</p>
+    <div class="auto-grid" id="boardGrid">
+      <div class="team-card"><div class="team-photo"><i class="ti ti-user-circle"></i></div><div class="team-info"><div class="team-name">Daniel Ayo David</div><div class="team-role">Founder &amp; Chairman</div></div></div>
+      <div class="team-card"><div class="team-photo" style="background:#1e5c3a"><i class="ti ti-user-circle"></i></div><div class="team-info"><div class="team-name">Mrs. David</div><div class="team-role">Co-Founder &amp; Director</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MANAGEMENT -->
+<div class="page" id="pg-management">
+  <div class="page-banner"><h1>Management</h1><p>The dedicated team leading Golden Stars Academy</p><div class="breadcrumb">Home <span>›</span> About Us <span>›</span> Management</div></div>
+  <div class="sec">
+    <div class="sec-tag">Primary Section</div><h2 class="sec-h" style="margin-bottom:6px;">Primary School Leadership</h2>
+    <p style="font-size:13px;color:var(--txt2);margin-bottom:24px;">Headed by the Headmaster/Headmistress and Assistant HM</p>
+    <div class="auto-grid" id="mgmtPrimaryGrid" style="margin-bottom:48px;">
+      <div class="team-card"><div class="team-photo"><i class="ti ti-user-circle"></i></div><div class="team-info"><div class="team-name">Headmaster/Headmistress</div><div class="team-role">Head of Primary Section</div></div></div>
+      <div class="team-card"><div class="team-photo" style="background:#1e5c3a"><i class="ti ti-user-circle"></i></div><div class="team-info"><div class="team-name">Assistant Headteacher</div><div class="team-role">Deputy Head — Primary</div></div></div>
+    </div>
+    <div class="sec-tag">Secondary Section</div><h2 class="sec-h" style="margin-bottom:6px;">Secondary School Leadership</h2>
+    <p style="font-size:13px;color:var(--txt2);margin-bottom:24px;">Headed by the Principal and Vice Principal</p>
+    <div class="auto-grid" id="mgmtSecondaryGrid">
+      <div class="team-card"><div class="team-photo" style="background:#2c3e58"><i class="ti ti-user-circle"></i></div><div class="team-info"><div class="team-name">The Principal</div><div class="team-role">Head of Secondary Section</div></div></div>
+      <div class="team-card"><div class="team-photo" style="background:#5c1e1e"><i class="ti ti-user-circle"></i></div><div class="team-info"><div class="team-name">Vice Principal</div><div class="team-role">Deputy — Secondary</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CURRICULUM -->
+<div class="page" id="pg-curriculum">
+  <div class="page-banner"><h1>Curriculum</h1><p>A world-class education rooted in Nigerian values</p><div class="breadcrumb">Home <span>›</span> Academics <span>›</span> Curriculum</div></div>
+  <div class="sec">
+    <div class="sec-tag">Academic Programmes</div><h2 class="sec-h">Five Levels of Excellence</h2>
+    <p class="sec-p">We follow the Nigerian National Curriculum while integrating modern teaching methodologies. Accredited for WAEC, NECO, and NABTEB.</p>
+    <div class="auto-grid">
+      <div class="card"><div class="card-icon"><i class="ti ti-baby-carriage"></i></div><h3>Toddler &amp; Early Years</h3><p>Play-based foundation sparking curiosity and developing early literacy.</p><span class="badge-tag">Ages 1.5–3</span></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-abc"></i></div><h3>Nursery School</h3><p>Structured early learning nurturing confidence and love of education.</p><span class="badge-tag">Ages 3–5</span></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-book"></i></div><h3>Primary School</h3><p>Strong core subjects, character education, and physical development.</p><span class="badge-tag">Primary 1–6</span></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-school"></i></div><h3>Junior Secondary</h3><p>Sciences, arts, technology, and humanities building critical thinking.</p><span class="badge-tag">JSS 1–3</span></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-certificate"></i></div><h3>Senior Secondary</h3><p>Science, Arts, Commercial — WAEC, NECO &amp; JAMB preparation.</p><span class="badge-tag">SSS 1–3</span></div>
+    </div>
+    <h3 style="font-size:18px;font-weight:700;margin:44px 0 16px;">Beyond the Classroom</h3>
+    <div class="auto-grid">
+      <div class="card"><div class="card-icon"><i class="ti ti-robot"></i></div><h3>STEM &amp; Robotics</h3><p>Hands-on science and engineering with practical projects.</p></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-device-laptop"></i></div><h3>Digital Literacy &amp; Coding</h3><p>Essential digital skills and programming for the modern world.</p></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-music"></i></div><h3>Arts, Music &amp; Drama</h3><p>Creative expression through visual arts, music, and theatre.</p></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-ball-football"></i></div><h3>Sports &amp; Physical Education</h3><p>Teamwork, discipline, and well-being through competitive sports.</p></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-briefcase"></i></div><h3>Leadership &amp; Entrepreneurship</h3><p>Developing the next generation of business leaders.</p></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-map-pin"></i></div><h3>Excursions &amp; Field Trips</h3><p>Real-world learning experiences that bring the curriculum to life.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMISSIONS -->
+<div class="page" id="pg-admissions">
+  <div class="page-banner"><h1>Admission Procedure</h1><p>Join the Golden Stars family — applications are open</p><div class="breadcrumb">Home <span>›</span> Academics <span>›</span> Admission Procedure</div></div>
+  <div class="sec">
+    <div class="tc" style="margin-bottom:40px;"><div class="sec-tag">Admissions 2025/2026</div><h2 class="sec-h">Simple 5-Step Process</h2><p class="sec-p">Applications are open. Limited spaces — apply early.</p></div>
+    <div class="steps">
+      <div class="step"><div class="step-n">1</div><div><h4>Submit Application</h4><p>Complete the enquiry form below or visit the school for a printed application.</p></div></div>
+      <div class="step"><div class="step-n">2</div><div><h4>Entrance Assessment</h4><p>Age-appropriate evaluation in a friendly, supportive environment.</p></div></div>
+      <div class="step"><div class="step-n">3</div><div><h4>Parent &amp; Child Interview</h4><p>A relaxed conversation to understand how we can best support your child.</p></div></div>
+      <div class="step"><div class="step-n">4</div><div><h4>Offer Letter Issued</h4><p>Successful candidates receive an offer within 5 working days.</p></div></div>
+      <div class="step"><div class="step-n">5</div><div><h4>Enrolment &amp; Payment</h4><p>Complete documentation, pay deposit, and collect welcome pack.</p></div></div>
+    </div>
+    <div style="max-width:600px;margin:40px auto 0;">
+      <div class="cf">
+        <h3>Submit Admission Enquiry</h3>
+        <div class="fr"><label>Child's Full Name</label><input type="text" placeholder="e.g. Chioma Johnson"/></div>
+        <div class="fr"><label>Parent / Guardian Name</label><input type="text" placeholder="e.g. Mrs. Johnson"/></div>
+        <div class="fr"><label>Phone Number</label><input type="tel" placeholder="+234 ..."/></div>
+        <div class="fr"><label>Email</label><input type="email" placeholder="your@email.com"/></div>
+        <div class="fr"><label>Level of Interest</label><select><option>Toddler / Nursery</option><option>Primary School</option><option>JSS</option><option>SSS</option></select></div>
+        <div class="fr"><label>Message</label><textarea placeholder="Any questions?"></textarea></div>
+        <button class="cf-btn">Submit Enquiry</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ACADEMIC CALENDAR PAGE -->
+<div class="page" id="pg-cal-page">
+  <div class="page-banner"><h1>Academic Calendar</h1><p>Third Term Activity Calendar · 2025/2026 Academic Session</p><div class="breadcrumb">Home <span>›</span> Academics <span>›</span> Academic Calendar</div></div>
+  <div class="sec">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:24px;">
+      <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;"><div style="background:#dbeafe;color:#1d4ed8;width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ti ti-calendar-event" style="font-size:17px;"></i></div><div><div style="font-size:11px;color:var(--txt2);font-weight:600;text-transform:uppercase;">Current Week</div><div style="font-weight:700;">Week 5 (Active)</div></div></div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;"><div style="background:#d1fae5;color:#065f46;width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ti ti-clock" style="font-size:17px;"></i></div><div><div style="font-size:11px;color:var(--txt2);font-weight:600;text-transform:uppercase;">Total Duration</div><div style="font-weight:700;">13 Full Weeks</div></div></div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;"><div style="background:#fef3c7;color:#92400e;width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ti ti-beach" style="font-size:17px;"></i></div><div><div style="font-size:11px;color:var(--txt2);font-weight:600;text-transform:uppercase;">Holidays &amp; Breaks</div><div style="font-weight:700;">3 Scheduled</div></div></div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;"><div style="background:#ede9fe;color:#7c3aed;width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ti ti-users" style="font-size:17px;"></i></div><div><div style="font-size:11px;color:var(--txt2);font-weight:600;text-transform:uppercase;">Next PTA Meeting</div><div style="font-weight:700;">Sat, 23 May 2026</div></div></div>
+    </div>
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:13px 16px;font-size:13px;color:#1e40af;display:flex;gap:10px;margin-bottom:18px;">
+      <i class="ti ti-info-circle" style="font-size:18px;flex-shrink:0;"></i>
+      <div><strong>Today is Monday, 19 May 2026</strong> — currently in <strong>Week 5</strong>. PTA Meeting this Saturday, 23 May 2026. All parents invited.</div>
+    </div>
+    <div class="filter-bar">
+      <div class="search-box"><i class="ti ti-search"></i><input type="text" id="calSearch" oninput="filterCal()" placeholder="Search events..."/></div>
+      <div class="filter-btns">
+        <button class="fbtn active" onclick="setCalFilter('all',this)">All</button>
+        <button class="fbtn" onclick="setCalFilter('academic',this)">Academics</button>
+        <button class="fbtn" onclick="setCalFilter('holiday',this)">Holidays</button>
+        <button class="fbtn" onclick="setCalFilter('social',this)">Social &amp; Clubs</button>
+        <button class="fbtn" onclick="setCalFilter('exam',this)">Exams &amp; C.A</button>
+      </div>
+    </div>
+    <div class="cal-table-wrap"><div style="overflow-x:auto;">
+      <table class="cal-tbl" id="calTable">
+        <thead><tr><th>Week</th><th>Date</th><th>Scheduled Events</th><th>Respondent</th></tr></thead>
+        <tbody id="calBody"></tbody>
+      </table>
+    </div></div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:14px;flex-wrap:wrap;">
+      <button onclick="window.print()" style="display:flex;align-items:center;gap:7px;padding:9px 18px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;"><i class="ti ti-printer"></i> Print</button>
+      <button onclick="exportICS()" style="display:flex;align-items:center;gap:7px;padding:9px 18px;background:var(--brand);color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;"><i class="ti ti-calendar-down"></i> Export to Device</button>
+    </div>
+  </div>
+</div>
+
+<!-- FEE SCHEDULE PAGE -->
+<div class="page" id="pg-fees-page">
+  <div class="page-banner"><h1>Fee Schedule</h1><p>Current approved fees for the 2025/2026 academic session</p><div class="breadcrumb">Home <span>›</span> Academics <span>›</span> Fee Schedule</div></div>
+  <div class="sec">
+    <div class="tc" style="margin-bottom:30px;"><div class="sec-tag">School Fees</div><h2 class="sec-h">Approved Fee Schedule <span id="feeSession" style="font-size:16px;color:var(--txt2);font-weight:400;"></span></h2><p class="sec-p">All fees shown have been approved by the school authority.</p></div>
+    <div class="auto-grid" id="feesGrid"><div class="fee-card"><div class="sk" style="height:14px;width:80px;margin:0 auto 8px;"></div><div class="sk" style="height:26px;width:100px;margin:10px auto;"></div></div></div>
+    <p style="text-align:center;font-size:12px;color:var(--txt2);margin-top:18px;">Contact us for payment plans: <span id="feePhone">+234 803 442 8823</span></p>
+  </div>
+</div>
+
+<!-- TOUR -->
+<div class="page" id="pg-tour">
+  <div class="page-banner"><h1>Take A Tour</h1><p>Experience Golden Stars Academy in person</p><div class="breadcrumb">Home <span>›</span> Academics <span>›</span> Take A Tour</div></div>
+  <div class="sec"><div class="split">
+    <div>
+      <div class="sec-tag">Campus Tour</div><h2 class="sec-h">See Our School for Yourself</h2>
+      <p class="sec-p">We warmly welcome prospective parents and students. Come and experience the Golden Stars environment firsthand.</p>
+      <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:24px;">
+        <div style="display:flex;gap:12px;align-items:center;"><div style="width:36px;height:36px;background:#e8eef8;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ti ti-clock" style="color:var(--brand);font-size:17px;"></i></div><div><p style="font-size:13px;font-weight:700;">Tour Schedule</p><p style="font-size:12px;color:var(--txt2);">Weekdays: 9:00am – 12:00pm · By appointment</p></div></div>
+        <div style="display:flex;gap:12px;align-items:center;"><div style="width:36px;height:36px;background:#e8eef8;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ti ti-phone" style="color:var(--brand);font-size:17px;"></i></div><div><p style="font-size:13px;font-weight:700;">Book a Tour</p><p class="dyn-phone" style="font-size:12px;color:var(--txt2);">+234 803 442 8823</p></div></div>
+      </div>
+      <button class="btn-p" onclick="showPage('contact')">Book Your Visit</button>
+    </div>
+    <div class="card" style="padding:26px;">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:16px;color:var(--brand);">What You'll See</h3>
+      <div style="display:flex;flex-direction:column;gap:11px;">
+        <div style="display:flex;gap:9px;align-items:center;"><i class="ti ti-check" style="color:#16a34a;font-size:17px;flex-shrink:0;"></i><p style="font-size:13px;">Spacious, well-ventilated classrooms</p></div>
+        <div style="display:flex;gap:9px;align-items:center;"><i class="ti ti-check" style="color:#16a34a;font-size:17px;flex-shrink:0;"></i><p style="font-size:13px;">Science and Computer laboratories</p></div>
+        <div style="display:flex;gap:9px;align-items:center;"><i class="ti ti-check" style="color:#16a34a;font-size:17px;flex-shrink:0;"></i><p style="font-size:13px;">Library and resource centre</p></div>
+        <div style="display:flex;gap:9px;align-items:center;"><i class="ti ti-check" style="color:#16a34a;font-size:17px;flex-shrink:0;"></i><p style="font-size:13px;">Sports field and recreational areas</p></div>
+        <div style="display:flex;gap:9px;align-items:center;"><i class="ti ti-check" style="color:#16a34a;font-size:17px;flex-shrink:0;"></i><p style="font-size:13px;">Secure premises with 24/7 surveillance</p></div>
+        <div style="display:flex;gap:9px;align-items:center;"><i class="ti ti-check" style="color:#16a34a;font-size:17px;flex-shrink:0;"></i><p style="font-size:13px;">Health bay with qualified personnel</p></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- INSIGHTS -->
+<div class="page" id="pg-insights">
+  <div class="page-banner"><h1>Insights</h1><p>News, achievements, and announcements from the school</p><div class="breadcrumb">Home <span>›</span> Resources <span>›</span> Insights</div></div>
+  <div class="sec">
+    <div class="sec-tag">Latest News</div><h2 class="sec-h">News &amp; Announcements</h2>
+    <p class="sec-p">Stay informed with the latest achievements and announcements — updated live by our admin team.</p>
+    <div class="auto-grid" id="insightsGrid"><div class="news-card"><div class="news-thumb"></div><div class="news-body"><div class="sk" style="width:80px;height:10px;margin-bottom:10px;"></div><div class="sk" style="margin-bottom:8px;"></div><div class="sk" style="width:80%;"></div></div></div></div>
+  </div>
+</div>
+
+<!-- FACILITY -->
+<div class="page" id="pg-facility">
+  <div class="page-banner"><h1>Our Facility</h1><p>A modern, safe, and inspiring learning environment</p><div class="breadcrumb">Home <span>›</span> Resources <span>›</span> Our Facility</div></div>
+  <div class="sec">
+    <div class="sec-tag">Our Facilities</div><h2 class="sec-h">Built for Learning, Designed for Growth</h2>
+    <p class="sec-p">Safe, clean, and well-equipped facilities designed to support learning, creativity, and well-being.</p>
+    <div class="auto-grid">
+      <div class="card"><div class="card-icon"><i class="ti ti-school"></i></div><h3>Spacious Classrooms</h3><p>Well-ventilated, interactive learning spaces with modern teaching tools.</p></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-flask"></i></div><h3>Science Laboratory</h3><p>Fully equipped lab enabling hands-on experiments and scientific exploration.</p></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-device-laptop"></i></div><h3>Computer Laboratory</h3><p>ICT-enabled space for digital literacy, coding, and technology education.</p></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-book-2"></i></div><h3>Library</h3><p>Rich collection of print and digital resources for independent learning.</p></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-ball-football"></i></div><h3>Sports Field</h3><p>Open recreational areas and sports facilities for physical development.</p></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-shield-check"></i></div><h3>Secure Premises</h3><p>24/7 surveillance and controlled access ensuring student safety.</p></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-heart-rate-monitor"></i></div><h3>Health Bay</h3><p>On-site health bay staffed with qualified personnel for student welfare.</p></div>
+      <div class="card"><div class="card-icon"><i class="ti ti-palette"></i></div><h3>Creative Arts Studio</h3><p>Dedicated space for arts, music, drama, and cultural expression.</p></div>
+    </div>
+  </div>
+  <div class="sec sec-alt">
+    <div class="sec-tag">Facility Photos</div><h2 class="sec-h">See Our Facilities</h2>
+    <div class="gal-grid" id="facilityGalGrid"><div class="g-item"><span class="g-ph">🏫</span></div><div class="g-item" style="background:#1e5c3a"><span class="g-ph">🔬</span></div><div class="g-item" style="background:#2c3e58"><span class="g-ph">💻</span></div><div class="g-item" style="background:#5c3a1e"><span class="g-ph">📚</span></div><div class="g-item" style="background:var(--accent)"><span class="g-ph">⚽</span></div></div>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<div class="page" id="pg-gallery">
+  <div class="page-banner"><h1>Gallery</h1><p>Moments from life at Golden Stars Academy</p><div class="breadcrumb">Home <span>›</span> Resources <span>›</span> Gallery</div></div>
+  <div class="sec">
+    <div class="sec-tag">Photo Gallery</div><h2 class="sec-h">Life at Golden Stars</h2>
+    <p class="sec-p">A glimpse into our vibrant community — academic life, sports, cultural celebrations, and more.</p>
+    <div class="gal-tabs">
+      <button class="gal-tab active" onclick="filterGal('all',this)">All</button>
+      <button class="gal-tab" onclick="filterGal('Academics',this)">Academics</button>
+      <button class="gal-tab" onclick="filterGal('Sports',this)">Sports</button>
+      <button class="gal-tab" onclick="filterGal('Cultural Events',this)">Cultural Events</button>
+      <button class="gal-tab" onclick="filterGal('Facilities',this)">Facilities</button>
+      <button class="gal-tab" onclick="filterGal('Excursions',this)">Excursions</button>
+      <button class="gal-tab" onclick="filterGal('Celebrations',this)">Celebrations</button>
+      <button class="gal-tab" onclick="filterGal('Meet the Team',this)">Meet the Team</button>
+    </div>
+    <div class="gal-grid" id="galGrid">
+      <div class="g-item"><span class="g-ph">🖼️</span></div><div class="g-item" style="background:#1e5c3a"><span class="g-ph">📸</span></div>
+      <div class="g-item" style="background:var(--accent)"><span class="g-ph">🏆</span></div><div class="g-item" style="background:#2c3e58"><span class="g-ph">⚽</span></div>
+      <div class="g-item" style="background:#5c3a1e"><span class="g-ph">🎵</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="page" id="pg-contact">
+  <div class="page-banner"><h1>Contact Us</h1><p>We'd love to hear from you</p><div class="breadcrumb">Home <span>›</span> Contact</div></div>
+  <div class="sec"><div class="split">
+    <div>
+      <div class="sec-tag">Get in Touch</div><h2 class="sec-h">We're Always Happy to Help</h2>
+      <p style="font-size:14px;color:var(--txt2);line-height:1.8;margin-bottom:26px;">Whether it's an admissions enquiry, a general question, or to arrange a school visit — our team is always available.</p>
+      <div class="ci"><div class="ci-ic"><i class="ti ti-map-pin"></i></div><div><h4>Address</h4><p class="dyn-address">Q762, After Living Faith Church, Yetu Quarters, GRA Gbessa, Abuja</p></div></div>
+      <div class="ci"><div class="ci-ic"><i class="ti ti-phone"></i></div><div><h4>Phone</h4><p class="dyn-phone">+234 803 442 8823</p></div></div>
+      <div class="ci"><div class="ci-ic"><i class="ti ti-mail"></i></div><div><h4>Email</h4><p class="dyn-email">info@goldenstarsacademy.com</p></div></div>
+      <div class="ci"><div class="ci-ic"><i class="ti ti-clock"></i></div><div><h4>Office Hours</h4><p>Mon–Fri: 7:30am – 4:00pm<br>Saturday: 9:00am – 12:00pm</p></div></div>
+      <div style="background:#e8eef8;border-radius:10px;height:160px;display:flex;align-items:center;justify-content:center;margin-top:20px;border:1px dashed #b0c0e0;flex-direction:column;gap:8px;"><i class="ti ti-map" style="font-size:28px;color:var(--brand);opacity:.4;"></i><p style="font-size:12px;color:var(--txt2);">Replace with Google Maps iframe</p></div>
+    </div>
+    <div class="cf">
+      <h3>Send Us a Message</h3>
+      <div class="fr"><label>Full name</label><input type="text" placeholder="e.g. Amaka Johnson"/></div>
+      <div class="fr"><label>Email</label><input type="email" placeholder="your@email.com"/></div>
+      <div class="fr"><label>Phone</label><input type="tel" placeholder="+234 ..."/></div>
+      <div class="fr"><label>Subject</label><select><option>Admission Enquiry</option><option>General Enquiry</option><option>School Visit</option><option>Fees &amp; Payment</option><option>Other</option></select></div>
+      <div class="fr"><label>Message</label><textarea placeholder="How can we help you?"></textarea></div>
+      <button class="cf-btn">Send Message</button>
+    </div>
+  </div></div>
+</div>
+
+<!-- MOTTO + FOOTER -->
+<div class="motto-band">"GOD IS ABLE" — The Motto of Golden Stars Academy, Abuja</div>
+<footer>
+  <div class="fg">
+    <div>
+      <div class="fb-brand">
+        <div id="footLogoWrap" style="width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;">
+          <svg width="44" height="44" viewBox="0 0 300 340" xmlns="http://www.w3.org/2000/svg" id="footLogoSvg">
+            <path d="M150 8 L272 54 L272 182 Q272 284 150 332 Q28 284 28 182 L28 54 Z" fill="#E8B830"/>
+            <path d="M150 22 L258 62 L258 182 Q258 272 150 316 Q42 272 42 182 L42 62 Z" fill="#CC2200"/>
+            <path d="M65 110 L235 110 L235 215 Q235 255 150 285 Q65 255 65 215 Z" fill="#1a3575"/>
+            <polygon points="150,95 155,110 171,110 158,120 163,135 150,126 137,135 142,120 129,110 145,110" fill="#F5C518"/>
+            <text x="150" y="276" text-anchor="middle" font-family="Georgia,serif" font-size="13" font-weight="bold" fill="#F5C518" letter-spacing="1">GOD IS ABLE</text>
+          </svg>
+        </div>
+        <div><div class="fb-name">Golden Stars Academy</div><div class="fb-tag" id="footTagline">GRA Gbessa, Abuja · Est. 2011</div></div>
+      </div>
+      <p>A co-educational day school committed to academic excellence, faith-based character development, and producing confident 21st-century leaders.</p>
+      <div class="soc">
+        <a class="sb" id="socFb" href="#"><i class="ti ti-brand-facebook"></i></a>
+        <a class="sb" id="socIg" href="#"><i class="ti ti-brand-instagram"></i></a>
+        <a class="sb" id="socWa" href="#"><i class="ti ti-brand-whatsapp"></i></a>
+        <a class="sb" href="#"><i class="ti ti-brand-youtube"></i></a>
+        <a class="sb" href="#"><i class="ti ti-brand-twitter"></i></a>
+      </div>
+    </div>
+    <div class="fc">
+      <h4>About Us</h4>
+      <a onclick="showPage('who-we-are')">Who We Are</a><a onclick="showPage('mission')">Our Mission</a>
+      <a onclick="showPage('vision')">Vision</a><a onclick="showPage('core-values')">Core Values</a>
+      <a onclick="showPage('board')">Board Members</a><a onclick="showPage('management')">Management</a>
+    </div>
+    <div class="fc">
+      <h4>Academics</h4>
+      <a onclick="showPage('curriculum')">Curriculum</a><a onclick="showPage('admissions')">Admissions</a>
+      <a onclick="showPage('cal-page')">Calendar</a><a onclick="showPage('fees-page')">Fee Schedule</a>
+      <a onclick="showPage('tour')">Take A Tour</a>
+      <h4 style="margin-top:14px;">Resources</h4>
+      <a onclick="showPage('insights')">Insights</a><a onclick="showPage('facility')">Our Facility</a>
+      <a onclick="showPage('gallery')">Gallery</a>
+    </div>
+    <div class="fc">
+      <h4>Contact</h4>
+      <a onclick="showPage('contact')">Get in Touch</a>
+      <a onclick="showPage('admissions')">Apply Now</a>
+      <a onclick="showPage('tour')">Book a Tour</a>
+      <h4 style="margin-top:14px;">Portals</h4>
+      <a href="#">Parent Login</a><a href="#">Student Login</a>
+      <a href="/admin/login">Admin Panel</a>
+    </div>
+  </div>
+  <div class="fbot">
+    <span>© 2026 Golden Stars Academy, Abuja. All rights reserved.</span>
+    <span id="footDesigner">Designed &amp; Powered by Eled Global</span>
+  </div>
+</footer>
+
+<script>
+// ── PAGE NAVIGATION ────────────────────────────────────────
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pg=document.getElementById('pg-'+id);
+  (pg||document.getElementById('pg-home')).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+}
+let mobOpen=false;
+function toggleMob(){mobOpen=!mobOpen;document.getElementById('mobMenu').classList.toggle('open',mobOpen);document.body.style.overflow=mobOpen?'hidden':'';}
+
+// ── CAROUSEL ──────────────────────────────────────────────
+let carIdx=0;
+const slides=document.querySelectorAll('.carousel-slide');
+const dotsEl=document.getElementById('carouselDots');
+slides.forEach((_,i)=>{const d=document.createElement('div');d.className='c-dot'+(i===0?' active':'');d.onclick=()=>goCarousel(i);dotsEl.appendChild(d);});
+function goCarousel(n){slides[carIdx].classList.remove('active');document.querySelectorAll('.c-dot')[carIdx].classList.remove('active');carIdx=(n+slides.length)%slides.length;slides[carIdx].classList.add('active');document.querySelectorAll('.c-dot')[carIdx].classList.add('active');}
+function moveCarousel(d){goCarousel(carIdx+d);}
+setInterval(()=>moveCarousel(1),5000);
+
+// ── LOAD LIVE DATA FROM API ────────────────────────────────
+async function loadSiteInfo(){
+  try{
+    const d=await fetch('/api/siteinfo').then(r=>r.json());
+    if(d.phone1){document.querySelectorAll('.dyn-phone').forEach(e=>e.textContent=d.phone1+(d.phone2?' · '+d.phone2:''));document.getElementById('tb-phone').innerHTML='<i class="ti ti-phone"></i> '+d.phone1;document.getElementById('feePhone').textContent=d.phone1;}
+    if(d.email){document.querySelectorAll('.dyn-email').forEach(e=>e.textContent=d.email);document.getElementById('tb-email').innerHTML='<i class="ti ti-mail"></i> '+d.email;}
+    if(d.address)document.querySelectorAll('.dyn-address').forEach(e=>e.textContent=d.address);
+    if(d.tagline){document.getElementById('navTagline').textContent=d.tagline;document.getElementById('footTagline').textContent=d.tagline;}
+    if(d.facebook)document.getElementById('socFb').href=d.facebook;
+    if(d.instagram)document.getElementById('socIg').href=d.instagram;
+    if(d.whatsapp)document.getElementById('socWa').href='https://wa.me/'+d.whatsapp.replace(/\D/g,'');
+  }catch(e){}
+}
+
+async function loadLogos(){
+  try{
+    const d=await fetch('/api/logos').then(r=>r.json());
+    if(d.school&&d.school.url){
+      const navWrap=document.getElementById('navLogoWrap');
+      navWrap.innerHTML=`<img src="${d.school.url}" alt="${d.school.alt}" style="width:50px;height:50px;object-fit:contain;border-radius:50%;"/>`;
+      const footWrap=document.getElementById('footLogoWrap');
+      footWrap.innerHTML=`<img src="${d.school.url}" alt="${d.school.alt}" style="width:44px;height:44px;object-fit:contain;border-radius:50%;"/>`;
+    }
+    if(d.designer&&d.designer.url&&d.designer.alt){
+      document.getElementById('footDesigner').innerHTML=`Designed &amp; Powered by <img src="${d.designer.url}" alt="${d.designer.alt}" style="height:18px;vertical-align:middle;margin-left:4px;border-radius:3px;"/> ${d.designer.alt}`;
+    }
+  }catch(e){}
+}
+
+async function loadNews(){
+  try{
+    const items=await fetch('/api/news').then(r=>r.json());
+    const bgs=['#1a3a6b','#1e5c3a','#c0321a','#2c3e58','#3a1e5c'];
+    const card=(n,i)=>`<div class="news-card"><div class="news-thumb" style="background:${bgs[i%bgs.length]};">${n.image_url?`<img src="${n.image_url}" alt="${n.title}"/>`:'<i class="ti ti-news" style="font-size:38px;color:rgba(255,255,255,.2);"></i>'}</div><div class="news-body"><div class="news-date">${n.date||''}</div><h3>${n.title}</h3><p>${n.body||''}</p></div></div>`;
+    const empty='<p style="color:#aaa;font-size:13px;">No announcements at this time.</p>';
+    const hn=document.getElementById('homeNews');if(hn)hn.innerHTML=items.length?items.slice(0,3).map(card).join(''):empty;
+    const ig=document.getElementById('insightsGrid');if(ig)ig.innerHTML=items.length?items.map(card).join(''):empty;
+    if(items.length){
+      const ticker=items.map(n=>`<span class="ticker-item">${n.title}</span>`).join('');
+      const ti=document.getElementById('tickerInner');if(ti)ti.innerHTML=ticker+ticker;
+    }
+  }catch(e){}
+}
+
+async function loadFees(){
+  try{
+    const items=await fetch('/api/fees').then(r=>r.json());
+    const g=document.getElementById('feesGrid');if(!g)return;
+    if(!items.length){g.innerHTML='<p style="color:#aaa;font-size:13px;grid-column:1/-1;text-align:center;">Fee schedule not yet published. Contact the school.</p>';return;}
+    const ses=[...new Set(items.map(f=>f.session))];
+    const el=document.getElementById('feeSession');if(el&&ses[0])el.textContent='— '+ses[0];
+    g.innerHTML=items.map(f=>`<div class="fee-card"><div class="fee-level">${f.level}</div><div class="fee-term">${f.term}</div><div class="fee-amount">₦${Number(f.amount).toLocaleString()}</div><div class="fee-term">${f.session}</div><span class="fee-ok">✓ Approved</span></div>`).join('');
+  }catch(e){}
+}
+
+async function loadGallery(){
+  try{
+    const items=await fetch('/api/gallery').then(r=>r.json());
+    allGal=items;
+    renderGal(items,'galGrid');
+    renderGal(items.filter(g=>g.category==='Facilities'),'facilityGalGrid');
+    renderTeam(items.filter(g=>g.category==='Board Members'),'boardGrid');
+    renderTeam(items.filter(g=>g.category==='Management-Primary'),'mgmtPrimaryGrid');
+    renderTeam(items.filter(g=>g.category==='Management-Secondary'),'mgmtSecondaryGrid');
+  }catch(e){}
+}
+
+let allGal=[];
+const galBgs=['#1a3a6b','#1e5c3a','#c0321a','#2c3e58','#5c3a1e','#3a1e5c'];
+const teamBgs=['#1a3a6b','#1e5c3a','#2c3e58','#5c1e1e','#3a1e5c'];
+
+function renderGal(items,gid){
+  const g=document.getElementById(gid);if(!g)return;
+  g.innerHTML=items.length?items.map((item,i)=>`<div class="g-item" style="background:${galBgs[i%galBgs.length]};">${item.url?`<img src="${item.url}" alt="${item.title}" loading="lazy"/>`:`<span class="g-ph">🖼️</span>`}<div class="g-lbl">${item.title||''}</div></div>`).join(''):`<div class="g-item"><span class="g-ph">🖼️</span><div class="g-lbl">Photos coming soon</div></div>`;
+}
+function filterGal(cat,btn){
+  document.querySelectorAll('.gal-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  renderGal(cat==='all'?allGal:allGal.filter(g=>g.category===cat),'galGrid');
+}
+function renderTeam(items,gid){
+  const g=document.getElementById(gid);if(!g||!items.length)return;
+  g.innerHTML=items.map((m,i)=>`<div class="team-card"><div class="team-photo" style="background:${teamBgs[i%teamBgs.length]};">${m.url?`<img src="${m.url}" alt="${m.title}"/>`:`<i class="ti ti-user-circle"></i>`}</div><div class="team-info"><div class="team-name">${m.title||'Team Member'}</div><div class="team-role">${m.role||''}</div>${m.bio?`<div class="team-bio">${m.bio}</div>`:''}</div></div>`).join('');
+}
+
+// ── CALENDAR ──────────────────────────────────────────────
+const calData=[
+  {week:"W1",active:false,cats:"academic",dates:"15, 17, 20, 24 Apr 2026",events:[{dot:"#3b82f6",text:"Staff resumption"},{dot:"#10b981",text:"General Resumption",bold:true},{dot:"#a855f7",text:"Fasting &amp; Prayer"}],resp:"Staff, Pupils &amp; Students"},
+  {week:"W2",active:false,cats:"academic holiday",dates:"27 Apr · 1 May 2026",events:[{dot:"#3b82f6",text:"Teaching and learning"},{dot:"#ef4444",text:"Public Holiday (Workers Day)",bold:true,red:true}],resp:"Staff, Pupils &amp; Students"},
+  {week:"W3",active:false,cats:"academic exam",dates:"4, 8 May 2026",events:[{dot:"#f59e0b",text:"Teaching &amp; Learning",sub:"Submission of exam questions for 1st C.A"},{dot:"#6366f1",text:"School fees drive / fellowship"}],resp:"Staff, Pupils &amp; Students"},
+  {week:"W4",active:false,cats:"academic social",dates:"11, 15 May 2026",events:[{dot:"#3b82f6",text:"Teaching and learning"},{dot:"#a855f7",text:"Club and Society"}],resp:"Staff &amp; Students"},
+  {week:"W5",active:true,cats:"academic social",dates:"18–22 May · 23 May 2026",events:[{dot:"#1d4ed8",text:"Teaching and Learning",sub:"School Fees Drive",bold:true},{dot:"#f59e0b",text:"P.T.A Meeting",bold:true}],resp:"Parents, Staff &amp; Management"},
+  {week:"W6",active:false,cats:"academic holiday social",dates:"25, 26, 27, 29 May 2026",events:[{dot:"#3b82f6",text:"Teaching and learning"},{dot:"#ec4899",text:"Colour Day"},{dot:"#ef4444",text:"Public Holiday (Children's Day)",bold:true,red:true},{dot:"#a855f7",text:"Fasting and Prayer"}],resp:"Staff, Pupils &amp; Students"},
+  {week:"W7",active:false,cats:"academic holiday",dates:"1–3 Jun · 4–5 Jun 2026",events:[{dot:"#3b82f6",text:"Teaching and learning"},{dot:"#f59e0b",text:"Mid-Term Break",bold:true}],resp:"Staff, Pupils &amp; Students"},
+  {week:"W8",active:false,cats:"academic holiday social",dates:"8, 10, 12 Jun 2026",events:[{dot:"#3b82f6",text:"Teaching and Learning",sub:"School Fees Drive"},{dot:"#6366f1",text:"Quiz and Debate"},{dot:"#ef4444",text:"Public Holiday (Democracy Day)",bold:true,red:true}],resp:"Staff, Pupils &amp; Students"},
+  {week:"W9",active:false,cats:"academic exam",dates:"15, 19 Jun 2026",events:[{dot:"#3b82f6",text:"Teaching and learning"},{dot:"#f59e0b",text:"2nd C.A Test",bold:true}],resp:"Pupils &amp; Students"},
+  {week:"W10",active:false,cats:"academic social",dates:"22, 26 Jun 2026",events:[{dot:"#3b82f6",text:"Teaching and learning"},{dot:"#a855f7",text:"Creativity Day / Club &amp; Society"}],resp:"Staff &amp; Students"},
+  {week:"W11",active:false,cats:"academic exam",dates:"29 Jun · 3 Jul 2026",events:[{dot:"#6366f1",text:"Revision / Examination",bold:true},{dot:"#f59e0b",text:"School Fees Drive"}],resp:"Staff, Pupils &amp; Students"},
+  {week:"W12",active:false,cats:"exam",dates:"6, 10 Jul 2026",events:[{dot:"#ef4444",text:"Examination in Progress",bold:true,red:true},{dot:"#f59e0b",text:"School Fees Drive"}],resp:"Staff, Pupils &amp; Students"},
+  {week:"W13",active:false,cats:"academic social",dates:"13, 17 Jul 2026",events:[{dot:"#f97316",text:"Compilation of Results"},{dot:"#10b981",text:"🎓 Graduation Day",bold:true},{dot:"#94a3b8",text:"Vacation Begins",italic:true}],resp:"Staff &amp; Management"},
+];
+let calFilter='all';
+function renderCal(){
+  const q=(document.getElementById('calSearch')||{value:''}).value.toLowerCase();
+  const tbody=document.getElementById('calBody');if(!tbody)return;
+  const TC={Resumption:'#16a34a',Holiday:'#9333ea',Exam:'#dc2626',Event:'#0891b2',Closure:'#b45309'};
+  tbody.innerHTML=calData.filter(row=>{
+    const text=(row.week+row.dates+row.events.map(e=>e.text).join(' ')).toLowerCase();
+    return text.includes(q)&&(calFilter==='all'||row.cats.includes(calFilter));
+  }).map(row=>`<tr style="${row.active?'background:#eff6ff;border-left:4px solid #1d4ed8;':''}">
+    <td style="font-weight:700;color:${row.active?'#1d4ed8':'#888'};font-size:12px;">${row.week}${row.active?'<span style="background:#1d4ed8;color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;margin-left:5px;">NOW</span>':''}</td>
+    <td style="font-size:12px;color:#555;white-space:nowrap;">${row.dates}</td>
+    <td>${row.events.map(e=>`<div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:7px;font-size:13px;${e.bold?'font-weight:700;':''}${e.red?'color:#b91c1c;':''}${e.italic?'font-style:italic;color:#888;':''}"><span style="width:7px;height:7px;border-radius:50%;background:${e.dot};flex-shrink:0;margin-top:5px;"></span><div>${e.text}${e.sub?`<div style="font-size:11px;color:#92400e;font-weight:600;margin-top:1px;">${e.sub}</div>`:''}</div></div>`).join('')}</td>
+    <td><span style="background:#e8eef8;color:#1a3a6b;padding:3px 9px;border-radius:8px;font-size:11px;font-weight:600;">${row.resp}</span></td>
+  </tr>`).join('');
+}
+function setCalFilter(cat,btn){calFilter=cat;document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderCal();}
+function filterCal(){renderCal();}
+
+function exportICS(){
+  const ics="BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Golden Stars Academy//EN\nBEGIN:VEVENT\nUID:pta-2026@goldenstars\nDTSTART:20260523T100000\nDTEND:20260523T140000\nSUMMARY:Golden Stars Academy PTA Meeting\nEND:VEVENT\nBEGIN:VEVENT\nUID:midterm-2026@goldenstars\nDTSTART:20260604\nDTEND:20260606\nSUMMARY:Golden Stars Academy Mid-Term Break\nEND:VEVENT\nBEGIN:VEVENT\nUID:exam-2026@goldenstars\nDTSTART:20260706\nDTEND:20260711\nSUMMARY:Golden Stars Academy Examinations\nEND:VEVENT\nBEGIN:VEVENT\nUID:grad-2026@goldenstars\nDTSTART:20260717T090000\nDTEND:20260717T130000\nSUMMARY:Golden Stars Academy Graduation Day\nEND:VEVENT\nEND:VCALENDAR";
+  const a=document.createElement('a');a.href='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);a.download='Golden_Stars_Academy_Calendar_2026.ics';a.click();
+}
+
+// ── INIT ──────────────────────────────────────────────────
+loadSiteInfo();
+loadLogos();
+loadNews();
+loadFees();
+loadGallery();
+renderCal();
+</script>
+</body>
+</html>"""
+
+with open("templates/index.html", "w", encoding="utf-8") as f:
+    f.write(content)
+
+print("✅ templates/index.html created successfully!")
+print("🚀 Restart the server: python -m uvicorn main:app --reload")
+print("🌐 Visit: http://localhost:8000")

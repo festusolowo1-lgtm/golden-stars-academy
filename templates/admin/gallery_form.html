@@ -1,0 +1,36 @@
+{% extends "admin/base.html" %}
+{% block title %}Upload Photo{% endblock %}
+{% block page_title %}Upload Photo{% endblock %}
+{% block content %}
+<div class="card" style="max-width:560px;">
+  <form method="post" action="/admin/gallery/upload" enctype="multipart/form-data">
+    <div class="fg"><label>Title / Caption</label><input type="text" name="title" placeholder="e.g. Award Ceremony JSS Three" required/></div>
+    <div class="fg"><label>Category / Page Target</label>
+      <select name="category" onchange="toggleTeam(this.value)">
+        <optgroup label="Gallery">
+          <option>Academics</option><option>Sports</option><option>Cultural Events</option>
+          <option>Facilities</option><option>Excursions</option><option>Celebrations</option><option>Meet the Team</option>
+        </optgroup>
+        <optgroup label="Team Pages">
+          <option>Board Members</option><option>Management-Primary</option><option>Management-Secondary</option>
+        </optgroup>
+      </select>
+    </div>
+    <div class="fg"><label>Upload from Device</label><input type="file" name="image" accept="image/*" onchange="previewImg(this)"/>
+    <img id="prev" style="display:none;width:90px;height:90px;border-radius:8px;object-fit:cover;border:1px solid #eee;margin-top:7px;"/></div>
+    <div class="fg"><label>Or Paste Image URL</label><input type="text" name="image_url" placeholder="https://..."/></div>
+    <div id="teamFields" style="display:none;">
+      <div class="fg"><label>Role / Position</label><input type="text" name="role" placeholder="e.g. Headmistress — Primary Section"/></div>
+      <div class="fg"><label>Short Bio (optional)</label><textarea name="bio" placeholder="Brief description..."></textarea></div>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button type="submit" class="btn btn-p"><i class="ti ti-upload"></i> Upload</button>
+      <a href="/admin/gallery" class="btn btn-o">Cancel</a>
+    </div>
+  </form>
+</div>
+<script>
+function previewImg(i){const r=new FileReader();r.onload=e=>{const p=document.getElementById('prev');p.src=e.target.result;p.style.display='block';};if(i.files[0])r.readAsDataURL(i.files[0]);}
+function toggleTeam(v){const t=['Board Members','Management-Primary','Management-Secondary','Meet the Team'];document.getElementById('teamFields').style.display=t.includes(v)?'block':'none';}
+</script>
+{% endblock %}

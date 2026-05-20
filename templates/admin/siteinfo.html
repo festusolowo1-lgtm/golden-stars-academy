@@ -1,0 +1,43 @@
+{% extends "admin/base.html" %}
+{% block title %}Site Information{% endblock %}
+{% block page_title %}Site Information{% endblock %}
+{% block content %}
+<div class="info-box"><i class="ti ti-refresh"></i> Changes save instantly and reflect live on the public website.</div>
+<form method="post" action="/admin/siteinfo">
+  <div class="card">
+    <div class="card-title" style="margin-bottom:16px;">📞 Contact Details</div>
+    <div class="fg-row">
+      <div class="fg"><label>Phone 1</label><input type="text" name="phone1" value="{{ data.phone1 }}"/></div>
+      <div class="fg"><label>Phone 2</label><input type="text" name="phone2" value="{{ data.phone2 }}"/></div>
+    </div>
+    <div class="fg-row">
+      <div class="fg"><label>Email</label><input type="email" name="email" value="{{ data.email }}"/></div>
+      <div class="fg"><label>Tagline / Motto</label><input type="text" name="tagline" value="{{ data.tagline }}"/></div>
+    </div>
+    <div class="fg"><label>Full Address</label><textarea name="address" style="height:60px;">{{ data.address }}</textarea></div>
+  </div>
+  <div class="card">
+    <div class="card-title" style="margin-bottom:16px;">📊 Live Statistics</div>
+    <div class="fg-row">
+      <div class="fg"><label>Nursery &amp; Primary Students</label><input type="text" name="nursery_count" value="{{ data.nursery_count }}" placeholder="e.g. 180"/></div>
+      <div class="fg"><label>JSS Students</label><input type="text" name="jss_count" value="{{ data.jss_count }}" placeholder="e.g. 150"/></div>
+    </div>
+    <div class="fg-row">
+      <div class="fg"><label>SSS Students</label><input type="text" name="sss_count" value="{{ data.sss_count }}" placeholder="e.g. 120"/></div>
+      <div class="fg"><label>Teacher Count</label><input type="text" name="teacher_count" value="{{ data.teacher_count }}" placeholder="e.g. 42"/></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title" style="margin-bottom:16px;">📱 Social Media</div>
+    <div class="fg-row">
+      <div class="fg"><label>Facebook URL</label><input type="text" name="facebook" value="{{ data.facebook }}"/></div>
+      <div class="fg"><label>Instagram URL</label><input type="text" name="instagram" value="{{ data.instagram }}"/></div>
+    </div>
+    <div class="fg-row">
+      <div class="fg"><label>WhatsApp Number</label><input type="text" name="whatsapp" value="{{ data.whatsapp }}"/></div>
+      <div class="fg"><label>YouTube URL</label><input type="text" name="youtube" value="{{ data.youtube }}"/></div>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-p" style="padding:12px 28px;"><i class="ti ti-device-floppy"></i> Save All Changes</button>
+</form>
+{% endblock %}

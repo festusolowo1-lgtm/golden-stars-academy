@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% block title %}Calendar{% endblock %}
+{% block page_title %}Academic Calendar{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-hd">
+    <div><div class="card-title">Calendar Events</div><div class="card-sub">Displayed on the Academic Calendar page of the website</div></div>
+    <a href="/admin/calendar/create" class="btn btn-p"><i class="ti ti-plus"></i> Add Entry</a>
+  </div>
+  {% set tc={'Resumption':'#16a34a','Holiday':'#9333ea','Exam':'#dc2626','Event':'#0891b2','Closure':'#b45309'} %}
+  {% if items %}
+  <div class="tbl-wrap"><table class="tbl">
+    <thead><tr><th>Type</th><th>Title</th><th>Date</th><th>Note</th><th>Action</th></tr></thead>
+    <tbody>{% for c in items %}<tr>
+      <td><span style="background:{{ tc.get(c.type,'#666') }}22;color:{{ tc.get(c.type,'#666') }};padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;">{{ c.type }}</span></td>
+      <td><strong>{{ c.title }}</strong></td><td>{{ c.date }}</td>
+      <td style="font-size:12px;color:#888;">{{ c.note or '—' }}</td>
+      <td><form method="post" action="/admin/calendar/{{ c.id }}/delete" onsubmit="return confirm('Remove?')"><button class="btn btn-d btn-sm"><i class="ti ti-trash"></i></button></form></td>
+    </tr>{% endfor %}</tbody>
+  </table></div>
+  {% else %}<p style="color:#aaa;font-size:13px;">No entries yet.</p>{% endif %}
+</div>
+{% endblock %}

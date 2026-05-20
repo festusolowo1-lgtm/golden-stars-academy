@@ -1,0 +1,17 @@
+{% extends "admin/base.html" %}
+{% block title %}Add Event{% endblock %}
+{% block page_title %}Add Calendar Entry{% endblock %}
+{% block content %}
+<div class="card" style="max-width:480px;">
+  <form method="post" action="/admin/calendar/create">
+    <div class="fg"><label>Event Type</label><select name="type">{% for t in ['Resumption','Holiday','Exam','Event','Closure'] %}<option>{{ t }}</option>{% endfor %}</select></div>
+    <div class="fg"><label>Title</label><input type="text" name="title" placeholder="e.g. Third Term Resumption" required/></div>
+    <div class="fg"><label>Date</label><input type="date" name="date" required/></div>
+    <div class="fg"><label>Note (optional)</label><input type="text" name="note" placeholder="e.g. All students report by 7:30am"/></div>
+    <div style="display:flex;gap:10px;">
+      <button type="submit" class="btn btn-p"><i class="ti ti-calendar-plus"></i> Add Entry</button>
+      <a href="/admin/calendar" class="btn btn-o">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

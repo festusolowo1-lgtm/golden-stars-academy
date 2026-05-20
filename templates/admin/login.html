@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Admin Login · Golden Stars Academy</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#1a3a6b;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;}
+.box{background:#fff;border-radius:18px;padding:34px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.logo-wrap{display:flex;justify-content:center;margin-bottom:12px;}
+h1{font-size:17px;font-weight:700;color:#1a3a6b;text-align:center;margin-bottom:3px;}
+.sub{font-size:12px;color:#888;text-align:center;margin-bottom:24px;}
+.fg{margin-bottom:14px;}
+.fg label{display:block;font-size:12px;font-weight:600;color:#555;margin-bottom:4px;}
+.fg input{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:7px;font-size:13px;outline:none;font-family:inherit;}
+.fg input:focus{border-color:#1a3a6b;}
+.btn-full{width:100%;padding:12px;background:#1a3a6b;color:#fff;border:none;border-radius:7px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;}
+.btn-full:hover{opacity:.9;}
+.err{background:#fee2e2;color:#991b1b;border:1px solid #fecaca;border-radius:7px;padding:9px 13px;font-size:12px;margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.foot{text-align:center;font-size:11px;color:#aaa;margin-top:14px;}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="logo-wrap">
+    {% if school_logo and school_logo.url %}
+      <img src="{{ school_logo.url }}" alt="{{ school_logo.alt_text }}" style="width:70px;height:70px;border-radius:50%;object-fit:contain;"/>
+    {% else %}
+      <svg width="70" height="70" viewBox="0 0 300 340" xmlns="http://www.w3.org/2000/svg" style="border-radius:50%">
+        <path d="M150 8 L272 54 L272 182 Q272 284 150 332 Q28 284 28 182 L28 54 Z" fill="#E8B830"/>
+        <path d="M150 22 L258 62 L258 182 Q258 272 150 316 Q42 272 42 182 L42 62 Z" fill="#CC2200"/>
+        <path d="M150 72 L245 104 L245 210 Q245 260 150 296 Q55 260 55 210 L55 104 Z" fill="#fff"/>
+        <path d="M65 110 L235 110 L235 215 Q235 255 150 285 Q65 255 65 215 Z" fill="#1a3575"/>
+        <polygon points="150,95 155,110 171,110 158,120 163,135 150,126 137,135 142,120 129,110 145,110" fill="#F5C518"/>
+        <text x="150" y="276" text-anchor="middle" font-family="Georgia,serif" font-size="13" font-weight="bold" fill="#1a3575" letter-spacing="1.5">GOD IS ABLE</text>
+        <path id="la1" d="M68 62 A96 96 0 0 1 232 62" fill="none"/>
+        <text font-family="Georgia,serif" font-size="14" font-weight="bold" fill="#fff"><textPath href="#la1" startOffset="10%">GOLDEN STARS</textPath></text>
+        <path id="la2" d="M80 85 A84 84 0 0 1 220 85" fill="none"/>
+        <text font-family="Georgia,serif" font-size="11" font-weight="bold" fill="#F5C518"><textPath href="#la2" startOffset="18%">ACADEMY · ABUJA</textPath></text>
+        <path d="M150 8 L272 54 L272 182 Q272 284 150 332 Q28 284 28 182 L28 54 Z" fill="none" stroke="#E8B830" stroke-width="3.5"/>
+      </svg>
+    {% endif %}
+  </div>
+  <h1>Golden Stars Academy</h1>
+  <div class="sub">Admin Portal — Staff Login</div>
+  {% for f in flash_msgs %}<div class="err"><i class="ti ti-alert-circle"></i>{{ f.msg }}</div>{% endfor %}
+  <form method="post" action="/admin/login">
+    <div class="fg"><label>Email Address</label><input type="email" name="email" placeholder="your@goldenstarsacademy.com" required autofocus/></div>
+    <div class="fg"><label>Password</label><input type="password" name="password" placeholder="••••••••" required/></div>
+    <button type="submit" class="btn-full">Sign In</button>
+  </form>
+  <div class="foot">🔐 Secured · Golden Stars Academy · GRA Gbessa, Abuja</div>
+</div>
+</body>
+</html>
