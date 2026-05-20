@@ -121,8 +121,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f5f6f8;color:#1c1c2e;di
     <div class="sb-sec">Academic</div>
     <a href="/admin/results" class="sb-a {% if '/admin/results' in request.url.path %}on{% endif %}"><i class="ti ti-chart-bar"></i> Results Approval</a>
     {% endif %}
-    {% if current_user.role == 'superadmin' %}
-    <div class="sb-sec">Portals</div>
+    {% if current_user.role in ['superadmin','ict'] %}
     <a href="/admin/staff"   class="sb-a {% if '/admin/staff'   in request.url.path %}on{% endif %}"><i class="ti ti-users"></i> Staff Accounts</a>
     <a href="/admin/parents" class="sb-a {% if '/admin/parents' in request.url.path %}on{% endif %}"><i class="ti ti-heart"></i> Parent Accounts</a>
     {% endif %}

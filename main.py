@@ -683,6 +683,25 @@ def siteinfo_post(request: Request, db: Session = Depends(get_db),
 # ADD THESE ROUTES to main.py  (after the existing routes)
 # ═══════════════════════════════════════════════════════════════
 
+
+@app.get("/api/stats")
+def api_stats(db: Session = Depends(get_db)):
+    students   = db.exec(select(Student)).all()
+    staff      = db.exec(select(StaffUser)).all()
+    news_count = len(db.exec(select(News).where(News.published == True)).all())
+    nursery  = get_info(db, "nursery_count",  str(len([s for s in students if "primary" in s.level.lower()])))
+    jss      = get_info(db, "jss_count",      str(len([s for s in students if "jss" in s.level.lower()])))
+    sss      = get_info(db, "sss_count",      str(len([s for s in students if "sss" in s.level.lower()])))
+    teachers = get_info(db, "teacher_count",  str(len(staff)))
+    return {
+        "nursery_count":  nursery,
+        "jss_count":      jss,
+        "sss_count":      sss,
+        "teacher_count":  teachers,
+        "total_students": str(len(students)),
+        "news_count":     str(news_count),
+    }
+
 # ── STAFF AUTH ────────────────────────────────────────────────
 
 @app.get("/staff/login", response_class=HTMLResponse)
