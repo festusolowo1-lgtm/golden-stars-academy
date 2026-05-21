@@ -283,18 +283,24 @@ def logout(request: Request):
 def dashboard(request: Request, db: Session = Depends(get_db),
               user: User = Depends(require_login)):
     err = request.query_params.get("err")
+    pending_results = db.exec(select(ExamResult).where(ExamResult.approved == False)).all()
     counts = {
-        "users":    db.exec(select(User)).all().__len__(),
-        "news":     db.exec(select(News)).all().__len__(),
-        "fees":     db.exec(select(Fee)).all().__len__(),
-        "gallery":  db.exec(select(GalleryItem)).all().__len__(),
-        "calendar": db.exec(select(CalendarEvent)).all().__len__(),
+        "users":           len(db.exec(select(User)).all()),
+        "staff":           len(db.exec(select(StaffUser)).all()),
+        "students":        len(db.exec(select(Student)).all()),
+        "parents":         len(db.exec(select(ParentUser)).all()),
+        "news":            len(db.exec(select(News)).all()),
+        "fees":            len(db.exec(select(Fee)).all()),
+        "gallery":         len(db.exec(select(GalleryItem)).all()),
+        "calendar":        len(db.exec(select(CalendarEvent)).all()),
+        "pending_results": len(pending_results),
     }
     recent_news = db.exec(select(News).order_by(News.id.desc()).limit(5)).all()
     pending_fees = db.exec(select(Fee).where(Fee.status=="pending")).all()
     return templates.TemplateResponse("admin/dashboard.html",
         ctx(request, db, counts=counts, recent_news=recent_news,
-            pending_fees=pending_fees, access_error=err=="access"))
+            pending_fees=pending_fees, access_error=err=="access",
+            pending_results_count=len(pending_results)))
 
 # ═══════════════════════════════════════════════════════════════
 # USERS  (Super Admin only)
@@ -889,6 +895,106 @@ def staff_upload_result(request: Request, db: Session = Depends(get_db),
     db.commit()
     flash(request, f"Result for {st.full_name} uploaded. Awaiting Principal approval.")
     return RedirectResponse("/staff/results", 302)
+
+
+# ── ADMIN PROFILE ─────────────────────────────────────────────────────────
+
+@app.get("/admin/profile", response_class=HTMLResponse)
+def admin_profile(request: Request, db: Session = Depends(get_db),
+                  user: User = Depends(require_login)):
+    return templates.TemplateResponse("admin/profile.html", ctx(request, db))
+
+@app.post("/admin/profile")
+async def admin_profile_post(request: Request, db: Session = Depends(get_db),
+                              user: User = Depends(require_login),
+                              name: str = Form(...),
+                              current_password: str = Form(""),
+                              new_password: str = Form(""),
+                              avatar: UploadFile = File(None)):
+    u = db.get(User, user.id)
+    if not u:
+        return RedirectResponse("/admin", 302)
+    u.name = name
+    if current_password and new_password:
+        if verify_password(current_password, u.password):
+            u.password = hash_password(new_password)
+            flash(request, "Password updated successfully.")
+        else:
+            flash(request, "Current password is incorrect.", "error")
+            return RedirectResponse("/admin/profile", 302)
+    if avatar and avatar.filename:
+        url = save_upload(avatar)
+        if url: u.avatar = url
+    db.add(u); db.commit()
+    flash(request, "Profile updated successfully.")
+    return RedirectResponse("/admin/profile", 302)
+
+# ── STUDENT SEARCH API ─────────────────────────────────────────────────────
+
+@app.get("/api/students/search")
+def search_students(q: str = "", db: Session = Depends(get_db)):
+    students = db.exec(select(Student)).all()
+    if q:
+        ql = q.lower()
+        students = [s for s in students if ql in s.full_name.lower()
+                    or ql in s.admission_no.lower()
+                    or ql in s.class_name.lower()]
+    return [{"id": s.id, "name": s.full_name, "class_name": s.class_name,
+             "admission_no": s.admission_no, "level": s.level} for s in students[:20]]
+
+# ── PARENT EDIT ROUTE ──────────────────────────────────────────────────────
+
+@app.post("/admin/parents/{pid}/edit")
+def admin_edit_parent(pid: int, request: Request, db: Session = Depends(get_db),
+                      user: User = Depends(require_role("superadmin","ict")),
+                      name: str = Form(...), email: str = Form(...),
+                      password: str = Form(""), phone: str = Form(""),
+                      student_ids: str = Form("")):
+    p = db.get(ParentUser, pid)
+    if p:
+        p.name = name; p.email = email; p.phone = phone; p.student_ids = student_ids
+        if password.strip(): p.password = hash_password(password)
+        db.add(p); db.commit()
+        flash(request, f"Parent account for {name} updated.")
+    return RedirectResponse("/admin/parents", 302)
+
+# ── STAFF TOGGLE ───────────────────────────────────────────────────────────
+
+@app.post("/admin/staff/{sid}/toggle")
+def admin_toggle_staff(sid: int, request: Request, db: Session = Depends(get_db),
+                       user: User = Depends(require_role("superadmin","ict"))):
+    s = db.get(StaffUser, sid)
+    if s:
+        s.status = "inactive" if s.status == "active" else "active"
+        db.add(s); db.commit()
+        flash(request, f"Staff status updated to {s.status}.")
+    return RedirectResponse("/admin/staff", 302)
+
+# ── PRINTABLE RESULT SHEET ─────────────────────────────────────────────────
+
+@app.get("/parent/results/{student_id}/print", response_class=HTMLResponse)
+def print_results(student_id: int, request: Request, db: Session = Depends(get_db),
+                  term: str = "Third Term", session: str = "2025/2026"):
+    p = get_parent(request, db)
+    ids = [int(i) for i in p.student_ids.split(",") if i.strip().isdigit()]
+    if student_id not in ids:
+        raise HTTPException(403, detail="Access denied")
+    student = db.get(Student, student_id)
+    if not student:
+        raise HTTPException(404)
+    results = db.exec(select(ExamResult).where(
+        ExamResult.student_id == student_id,
+        ExamResult.approved == True,
+        ExamResult.term == term,
+        ExamResult.session == session
+    )).all()
+    school_logo = db.exec(select(Logo).where(Logo.logo_type == "school")).first()
+    site = {k: get_info(db, k) for k in ["phone1","phone2","email","address","tagline"]}
+    return templates.TemplateResponse("portals/result_sheet.html",
+        {"request": request, "student": student, "results": results,
+         "term": term, "session": session, "parent": p,
+         "school_logo": school_logo, "site": site})
+
 
 # ── ADMIN: APPROVE RESULTS + MANAGE STAFF ─────────────────────
 

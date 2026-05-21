@@ -8,7 +8,7 @@
     <div class="card-sub">Review and approve exam results uploaded by teachers</div>
   </div>
   {% if pending %}
-  <form method="post" action="/admin/results/0/approve-all" onsubmit="return confirm('Approve ALL {{ pending|length }} pending results?')">
+  <form method="post" action="/admin/results/approve-all" onsubmit="return confirm('Approve ALL {{ pending|length }} pending results?')">
     <button type="submit" class="btn btn-ok"><i class="ti ti-check-all"></i> Approve All ({{ pending|length }})</button>
   </form>
   {% endif %}

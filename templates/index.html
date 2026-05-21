@@ -93,8 +93,8 @@ nav{background:#fff;padding:0 40px;border-bottom:1px solid var(--border);positio
 .team-bio{font-size:11px;color:var(--txt2);line-height:1.5;}
 
 /* CAROUSEL */
-.carousel-wrap{position:relative;overflow:hidden;height:520px;background:var(--brand);isolation:isolate;}
-.carousel-slide{position:absolute;inset:0;opacity:0;transition:opacity .8s ease;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f2d5a,var(--brand),#1a5c7a);overflow:hidden;}
+.carousel-wrap{position:relative;overflow:hidden;height:520px;background:var(--brand);isolation:isolate;isolation:isolate;}
+.carousel-slide{position:absolute;inset:0;opacity:0;transition:opacity .8s ease;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f2d5a,var(--brand),#1a5c7a);overflow:hidden;overflow:hidden;}
 .carousel-slide.active{opacity:1;}
 .carousel-slide img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:.35;}
 .carousel-content{position:relative;z-index:2;text-align:center;color:#fff;padding:40px;max-width:780px;}
@@ -988,12 +988,20 @@ footer{background:var(--brand);color:#fff;padding:50px 40px 20px;}
 <script>
 // ── PAGE NAVIGATION ────────────────────────────────────────
 function showPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const pg=document.getElementById('pg-'+id);
-  (pg||document.getElementById('pg-home')).classList.add('active');
+  document.querySelectorAll('.page').forEach(function(p){
+    p.classList.remove('active');
+    p.style.display='none';
+  });
+  var pg=document.getElementById('pg-'+id)||document.getElementById('pg-home');
+  pg.classList.add('active');
+  pg.style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
-  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(function(l){l.classList.remove('active');});
 }
+// Init on load
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('.page:not(.active)').forEach(function(p){p.style.display='none';});
+});
 let mobOpen=false;
 function toggleMob(){mobOpen=!mobOpen;document.getElementById('mobMenu').classList.toggle('open',mobOpen);document.body.style.overflow=mobOpen?'hidden':'';}
 

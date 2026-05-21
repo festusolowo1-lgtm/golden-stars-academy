@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Result Sheet &mdash; {{ student.full_name }}</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Plus Jakarta Sans',sans-serif;color:#0f2340;background:#fff;font-size:13px;}
+.page{max-width:800px;margin:0 auto;padding:32px;}
+.header{display:flex;align-items:center;gap:20px;border-bottom:3px solid #0f2340;padding-bottom:16px;margin-bottom:20px;}
+.logo{width:80px;height:80px;object-fit:contain;}
+.logo-fallback{width:80px;height:80px;border-radius:50%;background:#0f2340;display:flex;align-items:center;justify-content:center;}
+.school-name{font-size:22px;font-weight:800;color:#0f2340;line-height:1.2;}
+.school-sub{font-size:12px;color:#5a6a82;margin-top:3px;}
+.school-motto{font-size:11px;color:#c9a84c;font-weight:700;letter-spacing:.5px;margin-top:4px;}
+.report-title{
+  background:#0f2340;color:#fff;text-align:center;
+  padding:10px;font-size:14px;font-weight:700;letter-spacing:1px;
+  border-radius:6px;margin-bottom:16px;
+}
+.student-info{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  background:#f4f7fb;border-radius:8px;padding:14px;margin-bottom:20px;
+}
+.si-item label{font-size:10px;font-weight:700;color:#5a6a82;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:2px;}
+.si-item span{font-size:13px;font-weight:600;color:#0f2340;}
+table{width:100%;border-collapse:collapse;margin-bottom:20px;}
+thead tr{background:#0f2340;color:#fff;}
+th{padding:10px 12px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;}
+td{padding:9px 12px;border-bottom:1px solid #e5e9f0;}
+tbody tr:hover td{background:#f8fafc;}
+.grade{
+  display:inline-block;width:28px;height:28px;border-radius:50%;
+  font-size:11px;font-weight:800;text-align:center;line-height:28px;
+}
+.grade-A{background:#dcfce7;color:#14532d;}
+.grade-B{background:#dbeafe;color:#1e3a8a;}
+.grade-C{background:#fef9c3;color:#713f12;}
+.grade-D{background:#ffedd5;color:#7c2d12;}
+.grade-F{background:#fee2e2;color:#7f1d1d;}
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.summary-box{background:#f4f7fb;border-radius:8px;padding:12px;text-align:center;}
+.summary-box .val{font-size:20px;font-weight:800;color:#0f2340;}
+.summary-box .lbl{font-size:10px;color:#5a6a82;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-top:3px;}
+.footer-row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:30px;border-top:1px solid #e5e9f0;padding-top:20px;}
+.sig-line{border-top:1.5px solid #0f2340;width:160px;text-align:center;padding-top:5px;font-size:11px;color:#5a6a82;font-weight:600;}
+.footer-note{text-align:center;font-size:10px;color:#8fa3bc;margin-top:12px;}
+@media print{
+  body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .no-print{display:none;}
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <!-- Header -->
+  <div class="header">
+    {% if school_logo and school_logo.url %}
+      <img class="logo" src="{{ school_logo.url }}" alt="GSA Logo">
+    {% else %}
+      <div class="logo-fallback">
+        <svg width="50" height="58" viewBox="0 0 300 340" xmlns="http://www.w3.org/2000/svg">
+          <path d="M150 8 L272 54 L272 182 Q272 284 150 332 Q28 284 28 182 L28 54 Z" fill="#E8B830"/>
+          <path d="M65 110 L235 110 L235 215 Q235 255 150 285 Q65 255 65 215 Z" fill="#1a3575"/>
+          <polygon points="150,95 155,110 171,110 158,120 163,135 150,126 137,135 142,120 129,110 145,110" fill="#F5C518"/>
+        </svg>
+      </div>
+    {% endif %}
+    <div>
+      <div class="school-name">Golden Stars Academy</div>
+      <div class="school-sub">{{ site.address or 'Q762, After Living Faith Church, Yetu Quarters, GRA Gbessa, Abuja' }}</div>
+      <div class="school-sub">{{ site.phone1 or '+234 803 442 8823' }} &middot; {{ site.email or 'info@goldenstarsacademy.com' }}</div>
+      <div class="school-motto">"GOD IS ABLE" &mdash; goldenstarsacademy.com.ng</div>
+    </div>
+  </div>
+
+  <div class="report-title">STUDENT ACADEMIC REPORT &mdash; {{ term.upper() }} &middot; {{ session }}</div>
+
+  <!-- Student Info -->
+  <div class="student-info">
+    <div class="si-item"><label>Student Name</label><span>{{ student.full_name }}</span></div>
+    <div class="si-item"><label>Admission No.</label><span>{{ student.admission_no }}</span></div>
+    <div class="si-item"><label>Class</label><span>{{ student.class_name }}</span></div>
+    <div class="si-item"><label>Level</label><span>{{ student.level }}</span></div>
+    <div class="si-item"><label>Session</label><span>{{ session }}</span></div>
+    <div class="si-item"><label>Term</label><span>{{ term }}</span></div>
+  </div>
+
+  <!-- Summary -->
+  {% if results %}
+  {% set total_score = results | sum(attribute='total') %}
+  {% set avg = (total_score / results|length) | round(1) %}
+  {% set a_count = results | selectattr('grade','equalto','A') | list | length %}
+  <div class="summary-grid">
+    <div class="summary-box"><div class="val">{{ results|length }}</div><div class="lbl">Subjects</div></div>
+    <div class="summary-box"><div class="val">{{ "{:.1f}".format(avg) }}</div><div class="lbl">Average Score</div></div>
+    <div class="summary-box"><div class="val">{{ a_count }}</div><div class="lbl">A Grades</div></div>
+    <div class="summary-box">
+      <div class="val" style="color:{% if avg>=75 %}#16a34a{% elif avg>=55 %}#d97706{% else %}#dc2626{% endif %}">
+        {% if avg>=75 %}Excellent{% elif avg>=65 %}Very Good{% elif avg>=55 %}Good{% elif avg>=45 %}Fair{% else %}Needs Work{% endif %}
+      </div>
+      <div class="lbl">Overall</div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Results Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>Subject</th>
+        <th style="text-align:center;">CA1<br><small style="font-weight:400;opacity:.7">/20</small></th>
+        <th style="text-align:center;">CA2<br><small style="font-weight:400;opacity:.7">/20</small></th>
+        <th style="text-align:center;">Exam<br><small style="font-weight:400;opacity:.7">/60</small></th>
+        <th style="text-align:center;">Total<br><small style="font-weight:400;opacity:.7">/100</small></th>
+        <th style="text-align:center;">Grade</th>
+        <th>Remark</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in results %}
+      <tr>
+        <td style="font-weight:600;">{{ r.subject }}</td>
+        <td style="text-align:center;">{{ r.ca1 }}</td>
+        <td style="text-align:center;">{{ r.ca2 }}</td>
+        <td style="text-align:center;">{{ r.exam }}</td>
+        <td style="text-align:center;font-weight:800;font-size:15px;">{{ r.total }}</td>
+        <td style="text-align:center;"><span class="grade grade-{{ r.grade }}">{{ r.grade }}</span></td>
+        <td style="color:#5a6a82;">{{ r.remark }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" style="text-align:center;padding:24px;color:#8fa3bc;">No approved results available for this term.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Grading Key -->
+  <div style="background:#f4f7fb;border-radius:8px;padding:12px 16px;margin-bottom:20px;">
+    <div style="font-size:10px;font-weight:700;color:#5a6a82;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Grading Scale</div>
+    <div style="display:flex;gap:16px;font-size:12px;">
+      <span><strong>A</strong> &mdash; 75–100 &middot; Excellent</span>
+      <span><strong>B</strong> &mdash; 65–74 &middot; Very Good</span>
+      <span><strong>C</strong> &mdash; 55–64 &middot; Good</span>
+      <span><strong>D</strong> &mdash; 45–54 &middot; Fair</span>
+      <span><strong>F</strong> &mdash; 0–44 &middot; Fail</span>
+    </div>
+  </div>
+
+  <!-- Signatures -->
+  <div class="footer-row">
+    <div>
+      <div class="sig-line">Class Teacher</div>
+    </div>
+    <div>
+      <div class="sig-line">Head of Section</div>
+    </div>
+    <div>
+      <div class="sig-line">Principal / Director</div>
+    </div>
+  </div>
+
+  <div class="footer-note" style="margin-top:20px;">
+    This result sheet is computer-generated and official when signed and stamped.<br>
+    <strong>Golden Stars Academy</strong> &mdash; Raising World-Class Leaders &middot; goldenstarsacademy.com.ng<br>
+    <em style="color:#c9a84c;">Powered by RESCAVIA &mdash; festusolowo1@gmail.com &middot; +2348161303336</em>
+  </div>
+
+  <!-- Print Button -->
+  <div class="no-print" style="text-align:center;margin-top:28px;">
+    <button onclick="window.print()" style="background:#0f2340;color:#fff;border:none;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">
+      &#128438; Print Result Sheet
+    </button>
+    <a href="/parent/dashboard" style="display:inline-block;margin-left:10px;padding:12px 20px;border:1.5px solid #e5e9f0;border-radius:8px;font-size:13px;font-weight:600;color:#5a6a82;">
+      &larr; Back
+    </a>
+  </div>
+</div>
+</body>
+</html>
